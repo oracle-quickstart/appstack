@@ -1,49 +1,57 @@
-# App Stack
+App Stack
+=========
 
-This repository has automation for various application deployments on OCI using serverless resources such as Container Instances. In the current version only Java applications are supported. 
+This repository has automation for various application deployments on OCI using serverless resources such as Container Instances and Autonomous Database. In the current version only Java applications are supported. 
 
-The Container Instances service provides an ideal deployment solution because it provides full automation (serverless) and is cost effective. It therefore meets the common deployment requirements of an application developer.
+The Container Instances service provides an ideal deployment solution because it provides full automation (serverless) and is cost effective.
 
 # App Stack for Java
 
-App Stack for Java is a customizable Terraform Stack designed to automate the deployment of Java applications in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
+**App Stack for Java** is a customizable Terraform Stack designed to automate the deployment of Java applications in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
 
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.0/appstackforjava.zip) 
 
 ![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
-### Release
+You can provide your Java application through 3 mechanisms:
+1. The **source code**: this is the most valuable use case. Your source code can be in a github repo and mirrored in OCI DevOps (see details below). The stack will create a build pipeline that will automatically deploy new versions of the branch you have chosen during the configuration.
+2. An **artifact (JAR or WAR)**: the stack will configure the JDBC DataSource for the chosen Database and either execute the Jar or deploy the War in Tomcat.
+3. A **container image**: your application is already packaged in a *container image* published in the container registry.
+
+In all cases the deployment is done on Container Instances behind a load balancer.
+
+## Release
  - v0.1.0: Initial release as a preview.
 
-Prerequisites
-======
-For deploying your Java App with or without the App Stack, here is the list of OCI prerequisites.
+## Prerequisites
 
-- **DevOps project:** A Java application in a DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image.
+For deploying your Java App with the App Stack, here is the list of OCI prerequisites.
+
+- **DevOps project:** A Java application in a DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image. Note that the repo in OCI DevOps can be a mirror of a repo in GitHub.
 - **Vault:** A new user in IAM (<application_name>-user) is created and his token needed to connect to the DevOps repo is stored in the vault. When the stack is destroyed this user is dropped. This is needed because there is a limit on the number of tokens a user can have. Therefore we don’t want to use the current user. This isn't required if the application is provided as a container image.
-- **DNS:** A DNS zone to create the application URL (for example https://mytodolist.oraclecloud.dev). This isn't required. If not provided, the application may be available through its public IP.
-- **HTTPS certificate:** is needed for the load balancer. This is required if a domain name is provided. Otherwise, HTTP will be used against the IP address.
-Database: an existing ADB can be used with the stack but an option is provided to make the stack create one if needed
+- **DNS:** A DNS zone to create the application URL (for example https://myapp.domain.com). If not provided during the stack configuration, the application will be available through the load balancer's public IP. You can then configure your third-party DNS provider to point to this IP address.
+- **HTTPS certificate:** is needed for the load balancer. If no certificate is provided, HTTP will be used against the IP address.
+- **Database:** an existing ADB can be used with the stack. An option is also provided to make the stack create one if needed.
 
-Which Cloud Resources can be used?
-======
+## Which Cloud Resources will be used?
+
 - **Container Instances** to run the app. This is not part of the always-free resources but can be used with free credits.
-- **ADB-S** for persistence. An existing always-free ADB-S can be used with the stack. Need a checkbox button for new ADB-S.
-- **APM** for monitoring. The always-free offer can be used until the limit is reached. The stack has a checkbox to specify the always free should be used.
-- **Load Balancer** for scalability.  The always-free offer can be used until the limit is reached.
+- **ADB-S** for persistence. An existing always-free ADB-S can be used with the stack. The stack can also create one if the option is chosen.
+- **APM** for monitoring. The always-free offer can be used until the limit is reached. The stack has a checkbox to specify that *always free* should be used.
+- **Load Balancer** for scalability.  The *always-free* offer can be used until the limit is reached.
 - **DevOps** for the build pipeline and CI/CD. This is not part of the always-free resources because it uses Container Instances under the covers.
-- **Vault** for enhanced security. The always-free offer can be used until the limit is reached.
-- **Certificates** for HTTPS. The always-free offer can be used until the limit is reached.
-- **DNS** for application URL. This is not part of the always-free resources.
+- **Vault** for enhanced security. The *always-free* offer can be used until the limit is reached.
+- **Certificates** for HTTPS. The *always-free* offer can be used until the limit is reached.
+- **DNS** for application URL. This is not part of the *always-free* resources.
 
 
-Usage Instructions
-======
-## Configuration
+## Usage Instructions
+
+### Configuration
 
 #### Application
 
-This section describes the application to deploy and how to deploy it. The stack allows different types of deployments: *source code* deployment, java *artifact* deployment or container image deployment. Each type of deployment has different prerequisites and requires different parameters. *source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (note that you can mirror repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and Container image deployment requires the container image to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
+This section describes the application to deploy and how to deploy it. The stack allows different types of deployments: *source code* deployment, java *artifact* deployment or *container image* deployment. Each type of deployment has different prerequisites and requires different parameters. *Source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (note that you can mirror repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and *container image* deployment requires the *container image* to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
 
 - **Application Name:** application identifier, this name will be used as a prefix to some of the resources created by the stack (special characters should be avoided)
 - **Number of deployments:** this is the number of container instances that will be deployed, each container instance will run the application behind a firewall
@@ -102,7 +110,7 @@ If you are deploying the application using a *container image*, three environmen
    - Non-Standard options for example setting how much memory will be allocated for your JVM: -Xms1g -Xmx8g
  - **Program arguments:** If your application consumes arguments, you can use this field to set them. Arguments should be provided as a space-separated list and will be passed to the application at start-up : arg1  arg2 ..., argN.
 
-**Application configuration - SSL communication between backends and load balancer:** A certificate is needed to configure the load balancer and the backends so that the communication between them is done using SSL. If the *application source* is either *source code* or *artifact*, the stack will create this certificate, if the *application source* is a container image it is required for the container image to be configured using a certificate and that this certificate is provided so that the stack can configure the load balancer accordingly.
+**Application configuration - SSL communication between backends and load balancer:** A certificate is needed to configure the load balancer and the backends so that the communication between them is done using SSL. If the *application source* is either *source code* or *artifact*, the stack will create this certificate, if the *application source* is a *container image* it is required for the *container image* to be configured using a certificate and that this certificate is provided so that the stack can configure the load balancer accordingly.
 
 If the *application source* is either *source code* or *artifact*, the stack creates the self-signed certificate that will be used for the communication between the load balancer and the backends. This self-signed certificate is stored in a JKS keystore. If the *artifact* type is a WAR (web application deployed using Tomcat) Tomcat will be configured to use this keystore. If the *artifact* type is JAR the stack can use properties to configure SSL for the application. By default, Spring boot properties will be used by the stack. A checkbox allows to change that configuration.
 
@@ -142,16 +150,21 @@ This is optional but if you have a DNS domain that's managed in OCI you can conf
 
 #### Network
 
-The stack is designed to create all of its resources in the same VCN. It uses three subnets: the application subnet which contains the container instances running the application and the container instances running the deployment pipelines, the database subnet which contains the database if it is created by the stack and the load balancer subnet which contains the load balancer. The application and database subnets are private subnets, the load balancer subnet can be either a private or a public subnet depending on whether the load balancer should be accessible from the internet or not. 
+The stack is designed to create all of its resources in the same VCN. It uses three subnets:
+1. The application subnet which contains the container instances running the application and the container instances running the deployment pipelines;
+2. The database subnet which contains the database if it is created by the stack and
+3. The load balancer subnet which contains the load balancer.
 
-You can either create and new VCN by providing its CIDR blocks:
+The application and database subnets are private subnets, the load balancer subnet can be either a private or a public subnet depending on whether the load balancer should be accessible from the internet or not. 
+
+You can either create a new VCN by providing its CIDR blocks:
 
  - **VCN IPv4 CIDR Blocks:** IP address range of the Virtual Cloud Network
 
 Or use an existing VCN by choosing the compartment containing the VCN and selecting the VCN from the drop-down list:
 
- - **The compartment of the existing VCN:** select the compartment of the existing VCN you want to use.
- - **Select to VCN:** select the existing VCN
+ - **The compartment of the existing VCN:** select the compartment of the existing VCN you want to use
+ - **Select to VCN:** select the existing VCN to be used
 
 The application subnet will contain the container instances running the application and will also be used by the deployment pipeline. A Network Security Group will be created with ingress rules that allow the load balancer to access the application on its exposed port and egress rules that allow the application to connect to the database and other OCI Services through a Service Gateway.  If you use an existing VCN, you have the choice between using an existing subnet for the application subnet or creating a new one. If you chose to use and existing application subnet you should make sure that the subnet configuration does not prevent the application from accessing the database and other OCI Services and also does not prevent the load balancer form accessing the application on the exposed port.
 
@@ -160,14 +173,14 @@ The application subnet will contain the container instances running the applicat
  - Use existing application subnet
    - **Select the application subnet:** Container instances running the application and deploy pipeline will use this subnet. This list will only contain private subnets.
 
-A database subnet is only needed if the Stack creates a new database, as only the database will be created in this subnet. A Network Security Group will be created with ingress rules that allow the application to connect to the database. If you use an existing VCN, you have the choice between using an existing subnet for the database subnet or creating a new one. If you chose to use an existing database subnet you should make sure that the subnet configuration does not prevent the application from accessing the database.
+A database subnet is only needed if the Stack creates a new database, as only the database will be created in this subnet. A Network Security Group will be created with ingress rules that allow the application to connect to the database. If you use an existing VCN, you have the choice between using an existing subnet for the database or creating a new one. If you chose to use an existing database subnet you should make sure that the subnet configuration does not prevent the application from accessing the database.
 
  - Create a new database subnet
    - **Database Subnet Creation:** IPv4 CIDR Blocks: IP address range of the Database subnet. This range should be a subset of the VCN subnet and should not overlap with the other subnets in the VCN. The Autonomous Database will be created using this subnet.
  - Use existing database subnet
    - **Select the database subnet:** The Autonomous Database will be created using this subnet. This list will only contain private subnets.
 
-The load balancer subnet will contain the load balancer. It can either be a private or a public subnet. Resources in a private subnet can only have private IP addresses and are only accessible from inside OCI while resources in a public subnet can have both private and public IP addresses and are accessible from both OCI and the Internet. A Network Security Group will be created with an ingress rule that allows access to the load balancer, and an egress rule that allows the load balancer to access the application. If you chose to open the load balancer to the Internet, the load balancer subnet will be a public subnet, and an Internet Gateway will be created. If you are using an existing VCN you can choose to use an existing load balancer subnet or create a new one. The choice of existing load balancer subnet (private or public) should be consistent with whether you want to open access to the load balancer from the Internet or not.
+The load balancer subnet can either be a private or a public subnet. Resources in a private subnet can only have private IP addresses and are only accessible from inside OCI; while resources in a public subnet can have both private and public IP addresses and are accessible from both OCI and the Internet. A Network Security Group will be created with an ingress rule that allows access to the load balancer, and an egress rule that allows the load balancer to access the application. If you choose to open the load balancer to the Internet, the load balancer subnet will be a public subnet, and an Internet Gateway will be created. If you are using an existing VCN you can choose to use an existing load balancer subnet or create a new one. The choice of existing load balancer subnet (private or public) should be consistent with whether you want to open access to the load balancer from the Internet or not.
 
  - Create a new load balancer subnet
    - **Load Balancer Subnet IPv4 CIDR Blocks:** IP address range of the Load Balancer subnet. This range should be a subset of the VCN subnet and should not overlap with the other subnets in the VCN. The Load Balancer will use this subnet.
@@ -190,7 +203,7 @@ Finally you can choose the shape and size of the container instances that will r
  - **Memory (GB):** Memory configuration for the container instance
  - **OCPU:** Number of OCPU for the container instance.
 
-## Once the stack is configured the stack will
+### What will the stack do?
 
  - Create a new repository called "<application-name>_config" that includes:
    - **wallet.zip:** The database wallet (the zip that includes tnsnames.ora, cwallet.sso and ojdbc.properties) If the database wallet is rotated this zip file needs to be updated.
@@ -198,7 +211,7 @@ Finally you can choose the shape and size of the container instances that will r
    - **build_spec.yaml:** build spec for the build pipeline
    - **self.keystore:** self-signed keystore for the internal https connection between the load balancer and the container instances
    - **orapki.jar:** used by the build pipeline to add the db password to cwallet.sso.
- - Generate a container image of the user's application, including an HTTP/HTTPS server and pre-configured ADB access
+ - Generate a *container image* of the user's application, including an HTTP/HTTPS server and pre-configured ADB access
  - Add the generated image to the Container Registry
  - Deploy the application as a container in **Container Instances**
    - leverage OCI services such as VCN, Object stores 
@@ -206,14 +219,12 @@ Finally you can choose the shape and size of the container instances that will r
  - Dependencies to pull JDBC, UCP, R2DBC, and so on from Maven  Central. 
 
 
-Contributing
-============
+## Contributing
 
 This project welcomes contributions from the community. Before submitting a pull
 request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
 
-License
-=======
+## License
 
 Copyright (c) 2023, Oracle and/or its affiliates.
 
@@ -221,16 +232,16 @@ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.or
 
 See [LICENSE](./LICENSE) for more details.
 
-Appendix
-========
-## Build instructions
+## Appendix
+
+### Build instructions
 To build the zip on a mac from this directory:
 ```
 zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing"
 ```
 
 
-To create the Stack :
+To manually create the Stack on OCI:
  - Download the zip (under project download)
  - Log in to OCI
  - Navigate to "Resource manager" -> "Stacks"
