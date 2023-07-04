@@ -2,6 +2,8 @@
 
 This repository has automation for various application deployments on OCI using serverless resources such as Container Instances. In the current version only Java applications are supported. 
 
+The Container Instances service provides an ideal deployment solution because it provides full automation (serverless) and is cost effective. It therefore meets the common deployment requirements of an application developer.
+
 # App Stack for Java
 
 App Stack for Java is a customizable Terraform Stack designed to automate the deployment of Java applications in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
@@ -10,7 +12,8 @@ App Stack for Java is a customizable Terraform Stack designed to automate the de
 
 ![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
-
+### Release
+ - v0.1.0: Initial release as a preview.
 
 Prerequisites
 ======
@@ -202,7 +205,6 @@ Finally you can choose the shape and size of the container instances that will r
  - Terraform script for provisioning the Autonomous Database
  - Dependencies to pull JDBC, UCP, R2DBC, and so on from Maven  Central. 
 
-The Container Instances service provides an ideal deployment solution because it provides full automation (serverless) and is cost effective. It meets all the requirements to address the most simple use case of a Java developer.
 
 Contributing
 ============
@@ -213,19 +215,18 @@ request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
 License
 =======
 
-Copyright (c) 2021, 2022 Oracle and/or its affiliates.
-Released under the Universal Permissive License (UPL), Version 1.0.
-See [LICENSE](./LICENSE) for more details.
+Copyright (c) 2023, Oracle and/or its affiliates.
 
-[oci]: https://cloud.oracle.com/en_US/cloud-infrastructure
-[oci terraform]: https://registry.terraform.io/providers/oracle/oci/latest/docs
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+See [LICENSE](./LICENSE) for more details.
 
 Appendix
 ========
-
+## Build instructions
 To build the zip on a mac from this directory:
 ```
-zip -r ../javaappstack.zip . -x "*.git*" -x "*.DS_Store"
+zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing"
 ```
 
 
