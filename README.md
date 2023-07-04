@@ -14,8 +14,12 @@ The Container Instances service provides an ideal deployment solution because it
 ![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
 You can provide your Java application through 3 mechanisms:
-1. The **source code**: this is the most valuable use case. Your source code can be in a github repo and mirrored in OCI DevOps (see details below). The stack will create a build pipeline that will automatically deploy new versions of the branch you have chosen during the configuration.
-2. An **artifact (JAR or WAR)**: the stack will configure the JDBC DataSource for the chosen Database and either execute the Jar or deploy the War in Tomcat.
+1. The **source code**: this is the most valuable use case. Your source code can be in a github repo and mirrored in OCI DevOps (see details below). The stack will create a build pipeline that:
+    - Builds a container image of your application using your build instructions (for example 'mvn install'). The container image uses JDK17 to run your application.
+    - Automatically deploys new versions of the git branch you have chosen during the configuration.
+2. An **artifact (JAR or WAR)**: the stack configures the JDBC DataSource for the chosen Database and creates a build pipeline that:
+    - Builds a container image of your application by either executing the Jar (JDK17 is used) or deploying the War in Tomcat 9.
+    - Automatically deploys new versions of the artifact.
 3. A **container image**: your application is already packaged in a *container image* published in the container registry.
 
 In all cases the deployment is done on Container Instances behind a load balancer.
