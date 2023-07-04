@@ -8,7 +8,7 @@ App Stack for Java is a customizable Terraform Stack designed to automate the de
 
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstartappstack/releases/download/3.0/appstackjava.zip) 
 
-![Blueprint architecture](https://user-images.githubusercontent.com/todo.png)
+![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
 
 
