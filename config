@@ -1,0 +1,6 @@
+[DEFAULT]
+user=${user_ocid}
+fingerprint=${fingerprint}
+tenancy=${tenancy_ocid}
+region=${region}
+key_file=/root/.oci/oci_private.pem

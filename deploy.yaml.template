@@ -1,0 +1,20 @@
+# deploys the application to container instances 
+version: 0.1
+component: command
+timeoutInSeconds: 10000
+shell: /bin/sh
+failImmediatelyOnError: true
+inputArtifacts:
+  - name: artifact-name
+    type: GENERIC_ARTIFACT
+    artifactId: ${artifact_ocid}
+    registryId: ${registry_ocid}
+    path: ${artifact_path}
+    version: ${artifact_version}
+    location: $${OCI_WORKSPACE_DIR}/update_container_instance.sh
+steps: 
+  - type: Command
+    name: Run update container instance script
+    timeoutInSeconds: 600
+    command: |
+      mv $${OCI_WORKSPACE_DIR}/update_container_instance.sh /tmp/update_container_instance.sh

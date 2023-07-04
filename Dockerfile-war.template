@@ -1,0 +1,46 @@
+# dockerfile for running the application on tomcat from WAR
+FROM container-registry.oracle.com/java/jdk-no-fee-term:17
+ENV CATALINA_HOME=/opt/tomcat
+
+# COPY .oci root/.oci
+
+RUN mkdir /opt/app
+COPY self.keystore /opt/app/self.keystore
+COPY wallet /opt/app/wallet
+
+RUN mkdir /apm
+RUN mkdir /apm-agent
+WORKDIR /apm
+RUN curl -o apm-java-agent-installer-1.9.20.29.jar "https://repo1.maven.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/1.9.20.29/apm-java-agent-installer-1.9.20.29.jar" -L
+RUN java -jar ./apm-java-agent-installer-1.9.20.29.jar provision-agent -service-name=${application_name} -destination=/apm-agent -private-data-key=${private_data_key} -data-upload-endpoint=${endpoint}
+
+# download Tomcat
+RUN mkdir /opt/tomcat
+WORKDIR /opt/tomcat
+RUN curl -o apache-tomcat-9.0.74.tar.gz "https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.74/bin/apache-tomcat-9.0.74.tar.gz" -L
+RUN tar xzvf apache-tomcat-9.0.74.tar.gz -C ./ --strip-components=1
+RUN rm /opt/tomcat/apache-tomcat-9.0.74.tar.gz
+
+# Create tomcat user and group - do not run as ROOT
+RUN groupadd tomcat
+RUN useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+RUN chgrp -R tomcat /opt/tomcat
+RUN chgrp -R tomcat /opt/app/wallet
+RUN chmod -R g+r /opt/app/wallet
+RUN chmod -R g+r conf
+RUN chmod -R g+w temp
+RUN chmod -R g+w logs
+RUN chmod -R g+w webapps
+RUN chmod g+x conf
+RUN chown -R tomcat webapps/ work/ temp/ logs/
+
+# configure tomcat
+COPY server.xml /opt/tomcat/conf/server.xml
+COPY catalina.sh /opt/tomcat/bin/catalina.sh
+RUN chmod +x /opt/tomcat/bin/catalina.sh
+RUN rm -rf webapps/*
+COPY *.war /opt/tomcat/webapps/ROOT.war
+
+USER tomcat
+EXPOSE ${exposed_port}
+CMD ["/opt/tomcat/bin/catalina.sh", "run"]

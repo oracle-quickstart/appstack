@@ -1,0 +1,53 @@
+# This workflow will build and push a Java application to OCI based on an artifact
+version: 0.1
+component: build
+timeoutInSeconds: 10000
+shell: bash
+env:
+  vaultVariables:
+    OCI_TOKEN : "${oci_token}"
+    DB_USER_PASSWORD : "${db_user_password}"
+    WALLET_PASSWORD : "${wallet_password}"
+inputArtifacts:
+  - name: javaapp
+    type: GENERIC_ARTIFACT
+    artifactId: ${artifactId}
+    registryId: ${registryId} 
+    path: "javaapp"
+    version: "0.0.1"
+    location: $${OCI_WORKSPACE_DIR}/${config_repo_name}/${fileName}
+steps: 
+  - type: Command
+    name: Unzip wallet
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
+      unzip wallet.zip -d wallet
+  - type: Command
+    name: Download oraclepki and add username and password to wallet
+    timeoutInSeconds: 300
+    failImmediatelyOnError: true
+    command: |
+      cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
+      curl -o oraclepki.jar "https://repo1.maven.org/maven2/com/oracle/database/security/oraclepki/23.2.0.0/oraclepki-23.2.0.0.jar" -L
+      echo -e '#/bin/sh\njava -cp oraclepki.jar oracle.security.pki.OracleSecretStoreTextUI -wrl wallet -createCredential "${db_connection_url}" "${db_username}" "'$${DB_USER_PASSWORD}'" <<EOF\n'$${WALLET_PASSWORD}'\nEOF' >> add-credential-wallet.sh
+      sh add-credential-wallet.sh
+  - type: Command
+    name: Build Docker image
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      docker build . --file Dockerfile --tag ${image_remote_tag}
+  - type: Command
+    name: Login to repo
+    timeoutInSeconds: 900
+    failImmediatelyOnError: true
+    command: |
+      echo $${OCI_TOKEN} | docker login ${container_registry_repo} --username ${login} --password-stdin
+  - type: Command
+    name: Push image
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      docker push ${image_remote_tag}

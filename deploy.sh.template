@@ -1,0 +1,8 @@
+# drain and restart each container instance
+  - type: Command
+    name: Deploy ${backend_name}
+    timeoutInSeconds: 600
+    command: |
+      echo "Try using command"
+      cd /tmp
+      /bin/sh ./update_container_instance.sh ${backend_name} ${backend_set_name} ${load_balancer_id} ${container_instance_id}
