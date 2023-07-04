@@ -1,3 +1,6 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
 resource "oci_kms_vault" "app_vault" {
   compartment_id = var.compartment_id
   display_name = var.new_vault_display_name

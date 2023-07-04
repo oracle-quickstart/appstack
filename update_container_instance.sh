@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 # drain backend from backend set
 OUTPUT=$(oci lb backend update --backend-name $1 --backend-set-name $2 --backup false --drain true --load-balancer-id $3 --offline false --weight 1 --wait-for-state SUCCEEDED --wait-for-state FAILED)
 if [[ $OUTPUT == *"FAILED"* ]] ; then

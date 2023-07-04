@@ -1,3 +1,6 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
 # The "config-repo" is used to store the required configuration files and the
 # dependent libs such as the tomcat jar in the WAR case, apm jar for monitoring,
 # the wallet to connect to ADB-S, etc. If the stack is re-executed Terraform knows
