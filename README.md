@@ -222,6 +222,9 @@ Finally you can choose the shape and size of the container instances that will r
  - Terraform script for provisioning the Autonomous Database
  - Dependencies to pull JDBC, UCP, R2DBC, and so on from Maven  Central. 
 
+## Destroying the stack
+
+Before you can destroy the stack and all the resources that have been created you must manually delete the artifact that the stack has created under the "Stack registry".
 
 ## Contributing
 
