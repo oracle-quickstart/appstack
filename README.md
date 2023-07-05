@@ -256,7 +256,7 @@ You can also send an email to the product team at "appstack_ww at oracle.com".
 ### Build instructions
 To build the zip on a mac from this directory:
 ```
-zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing"
+zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing" -x "*.md"
 ```
 
 
