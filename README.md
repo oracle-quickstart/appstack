@@ -1,61 +1,67 @@
 App Stack
 =========
 
-This repository has automation for various application deployments on OCI using serverless resources such as Container Instances and Autonomous Database. In the current version only Java applications are supported. 
+This repository has automation for various application deployments on the Oracle Cloud Infrastructure (OCI) using serverless resources such as Container Instances and Autonomous Database. In the current version only Java applications are supported. 
 
-The Container Instances service provides an ideal deployment solution because it provides full automation (serverless) and is cost effective.
+The Container Instances service is an ideal deployment platform as it is serverless and cost effective.
+# Target Applications
 
+**Web applications** Server-side HTML applications, a.k.a. servlets or Java Server Pages
+**Back-end servers** REST APIs
 # App Stack for Java
 
-**App Stack for Java** is a customizable Terraform Stack designed to automate the deployment of Java applications in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
+**App Stack for Java** is a customizable Terraform Stack designed to automate the deployment of Java applications (the backend only) in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
 
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.0/appstackforjava.zip) 
 
 ![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
-You can provide your Java application through 3 mechanisms:
-1. The **source code**: this is the most valuable use case. Your source code can be in a github repo and mirrored in OCI DevOps (see details below). The stack will create a build pipeline that:
-    - Builds a container image of your application using your build instructions (for example 'mvn install'). The container image uses JDK17 to run your application.
-    - Automatically deploys new versions of the git branch you have chosen during the configuration.
-2. An **artifact (JAR or WAR)**: the stack configures the JDBC DataSource for the chosen Database and creates a build pipeline that:
+Your Java application can be packaged in 3 ways:
+1. As **source code**: this is the most valuable use case. Your source code can be in a github repo and mirrored in OCI DevOps (see details below). The stack will create a build pipeline that:
+    - Builds a container image of your application using your build instructions (for example 'mvn install'). The container image uses JDK17 to build and run your application.
+    - Automatically deploys new versions of the git branch you have selected during the configuration.
+2. As a **Java artifact (JAR or WAR)**: the stack configures the JDBC DataSource for the selected Database and creates a build pipeline that:
     - Builds a container image of your application by either executing the Jar (JDK17 is used) or deploying the War in Tomcat 9.
     - Automatically deploys new versions of the artifact.
-3. A **container image**: your application is already packaged in a *container image* published in the container registry.
+3. As a  **container image**: your application is already packaged in a *container image* published in the container registry.
 
 In all cases the deployment is done on Container Instances behind a load balancer.
 
-## Release
- - v0.1.0: Initial release as a preview.
+## Release and status
+ - This is v0.1.0: initial release as a preview.
 
 ## Prerequisites
 
 For deploying your Java App with the App Stack, here is the list of OCI prerequisites.
 
-- **DevOps project:** A Java application in a DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image. Note that the repo in OCI DevOps can be a mirror of a repo in GitHub.
-- **Vault:** A new user in IAM (<application_name>-user) is created and his token needed to connect to the DevOps repo is stored in the vault. When the stack is destroyed this user is dropped. This is needed because there is a limit on the number of tokens a user can have. Therefore we don’t want to use the current user. This isn't required if the application is provided as a container image.
-- **DNS:** A DNS zone to create the application URL (for example https://myapp.domain.com). If not provided during the stack configuration, the application will be available through the load balancer's public IP. You can then configure your third-party DNS provider to point to this IP address.
-- **HTTPS certificate:** is needed for the load balancer. If no certificate is provided, HTTP will be used against the IP address.
-- **Database:** an existing ADB can be used with the stack. An option is also provided to make the stack create one if needed.
+- **DevOps project (optional):** A Java application in an OCI DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image. Note that the repo in OCI DevOps can be a mirror of a GutHub repo.
+- **Database:** an existing Autonomous Database  - Shared Infrastructure (ADB-S) can be used with the stack. The stack may create a new one, if specified during the Stack configuration. 
+- **Vault (optional):** A new user in IAM (<application_name>-user) is created and his token used for connectng to the DevOps repo, is stored in the vault. When the stack is destroyed this user is removed. A Vault is necessary to avoid the limit on the number of tokens the current user have; we do not recommend using the current user however, the Vault isn't required if the application is provided as a container image.
+- **DNS (optional):** A DNS zone for creating the application URL (for example https://myapp.domain.com). If not provided during the stack configuration, the application will be available through the load balancer's public IP. You can then configure your third-party DNS provider to point to this IP address.
+- **HTTPS certificate (optional):** is needed for the load balancer. If no certificate is provided, HTTP will be used against the IP address.
+
 
 ## Which Cloud Resources will be used?
 
-- **Container Instances** to run the app. This is not part of the always-free resources but can be used with free credits.
-- **ADB-S** for persistence. An existing always-free ADB-S can be used with the stack. The stack can also create one if the option is chosen.
-- **APM** for monitoring. The always-free offer can be used until the limit is reached. The stack has a checkbox to specify that *always free* should be used.
-- **Load Balancer** for scalability.  The *always-free* offer can be used until the limit is reached.
-- **DevOps** for the build pipeline and CI/CD. This is not part of the always-free resources because it uses Container Instances under the covers.
-- **Vault** for enhanced security. The *always-free* offer can be used until the limit is reached.
-- **Certificates** for HTTPS. The *always-free* offer can be used until the limit is reached.
-- **DNS** for application URL. This is not part of the *always-free* resources.
+The [Oracle Cloud Free Tier service](https://www.oracle.com/cloud/free/) allows you to  build, test, and deploy your applications on Oracle Cloud for free . Upon signing-up ,  the service comes with $300 credit with 30 days expiration; following the expiration or the exhaustion of the credit, most of the provisioned services remain available  as [Always Free](https://www.oracle.com/cloud/free/#always-free). You may add additional credit for services that do not fall under Always-Free.
+- **Container Instances** for building and running  the app. This service is part of Free-Tier but not an Always-Free resource. 
+- **DevOps** for the build pipeline and CI/CD. This service is part of Free-Tier but not an Always-Free resource (it uses Container Instances under the covers).
+- **ADB-S** for persistence. This service is part of Always-Free. 
+- **Vault** for enhanced security. This service is part of Always-Free. 
+- **APM** for monitoring. This service is part of Always-Free with some limits. The stack has a checkbox to specify that *always free* should be used.
+- **Load Balancer** for scalability.  This service is part of Always-Free with some limits.
+- **HTTPS Certificates**. This service is part of Always-Free with some limits. 
+- **DNS** for application URL. This service is part of Free-Tier but not an Always-Free resource. 
 
 
 ## Usage Instructions
 
-### Configuration
+### Stack Configuration
 
-#### Application
+#### Your Application
 
-This section describes the application to deploy and how to deploy it. The stack allows different types of deployments: *source code* deployment, java *artifact* deployment or *container image* deployment. Each type of deployment has different prerequisites and requires different parameters. *Source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (note that you can mirror repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and *container image* deployment requires the *container image* to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
+
+This section describes the packaging and deployment of your application. The stack supports different kinds of deployments: *source code* deployment, java *artifact* deployment or *container image* deployment. Each type of deployment has different prerequisites and requires different parameters. *Source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (mirrored repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and *container image* deployment requires the *container image* to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
 
 - **Application Name:** application identifier, this name will be used as a prefix to some of the resources created by the stack (special characters should be avoided)
 - **Number of deployments:** this is the number of container instances that will be deployed, each container instance will run the application behind a firewall
