@@ -480,7 +480,7 @@ locals {
   # database password
   password = (var.use_existing_database ? var.autonomous_database_password : var.autonomous_database_admin_password)
   # connection string index to use 0 for mTLS 5 for TLS
-  conn_url_index = ((local.use-image ? 0 : 5))
+  conn_url_index = 0
   # database connection string
   connection_str = (
     var.use_existing_database 
