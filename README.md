@@ -34,7 +34,7 @@ In all cases the deployment is done on Container Instances behind a load balance
 
 For deploying your Java App with the App Stack, here is the list of OCI prerequisites.
 
-- **DevOps project (optional):** A Java application in an OCI DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image. Note that the repo in OCI DevOps can be a mirror of a GutHub repo.
+- **DevOps project (optional):** A Java application in an OCI DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image.
 - **Database:** an existing Autonomous Database  - Shared Infrastructure (ADB-S) can be used with the stack. The stack may create a new one, if specified during the Stack configuration. 
 - **Vault (optional):** A new user in IAM (<application_name>-user) is created and his token used for connectng to the DevOps repo, is stored in the vault. When the stack is destroyed this user is removed. A Vault is necessary to avoid the limit on the number of tokens the current user has however, the Vault isn't required if the application is provided as a container image.
 - **DNS (optional):** A DNS zone for creating the application URL (for example https://myapp.domain.com). If not provided during the stack configuration, the application will be available through the load balancer's public IP. You can then configure your third-party DNS provider to point to this IP address.
