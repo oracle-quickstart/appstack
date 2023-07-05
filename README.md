@@ -18,7 +18,7 @@ The Container Instances service is an ideal deployment platform as it is serverl
 
 Your Java application can be packaged in 3 ways:
 1. As **source code**: this is the most valuable use case. Your source code can be in a github repo and mirrored in OCI DevOps (see details below). The stack will create a build pipeline that:
-    - Builds a container image of your application using your build instructions (for example 'mvn install'). The container image uses JDK17 to build and run your application.
+    - Builds a container image of your application using your build instructions (for example 'mvn install'). The container image uses JDK17 to run your application.
     - Automatically deploys new versions of the git branch you have selected during the configuration.
 2. As a **Java artifact (JAR or WAR)**: the stack configures the JDBC DataSource for the selected Database and creates a build pipeline that:
     - Builds a container image of your application by either executing the Jar (JDK17 is used) or deploying the War in Tomcat 9.
