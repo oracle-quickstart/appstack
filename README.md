@@ -36,14 +36,14 @@ For deploying your Java App with the App Stack, here is the list of OCI prerequi
 
 - **DevOps project (optional):** A Java application in an OCI DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image. Note that the repo in OCI DevOps can be a mirror of a GutHub repo.
 - **Database:** an existing Autonomous Database  - Shared Infrastructure (ADB-S) can be used with the stack. The stack may create a new one, if specified during the Stack configuration. 
-- **Vault (optional):** A new user in IAM (<application_name>-user) is created and his token used for connectng to the DevOps repo, is stored in the vault. When the stack is destroyed this user is removed. A Vault is necessary to avoid the limit on the number of tokens the current user have; we do not recommend using the current user however, the Vault isn't required if the application is provided as a container image.
+- **Vault (optional):** A new user in IAM (<application_name>-user) is created and his token used for connectng to the DevOps repo, is stored in the vault. When the stack is destroyed this user is removed. A Vault is necessary to avoid the limit on the number of tokens the current user has however, the Vault isn't required if the application is provided as a container image.
 - **DNS (optional):** A DNS zone for creating the application URL (for example https://myapp.domain.com). If not provided during the stack configuration, the application will be available through the load balancer's public IP. You can then configure your third-party DNS provider to point to this IP address.
 - **HTTPS certificate (optional):** is needed for the load balancer. If no certificate is provided, HTTP will be used against the IP address.
 
 
 ## Which Cloud Resources will be used?
 
-The [Oracle Cloud Free Tier service](https://www.oracle.com/cloud/free/) allows you to  build, test, and deploy your applications on Oracle Cloud for free . Upon signing-up ,  the service comes with $300 credit with 30 days expiration; following the expiration or the exhaustion of the credit, most of the provisioned services remain available  as [Always Free](https://www.oracle.com/cloud/free/#always-free). You may add additional credit for services that do not fall under Always-Free.
+The [Oracle Cloud Free Tier service](https://www.oracle.com/cloud/free/) allows you to  build, test, and deploy your applications on Oracle Cloud for free. Upon signing up, the service comes with a $300 credit with 30 days expiration; following the expiration or the exhaustion of the credit, most of the provisioned services remain available  as [Always Free](https://www.oracle.com/cloud/free/#always-free). You may add additional credit for services that do not fall under Always-Free.
 - **Container Instances** for building and running  the app. This service is part of Free-Tier but not an Always-Free resource. 
 - **DevOps** for the build pipeline and CI/CD. This service is part of Free-Tier but not an Always-Free resource (it uses Container Instances under the covers).
 - **ADB-S** for persistence. This service is part of Always-Free. 
