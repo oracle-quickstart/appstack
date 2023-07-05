@@ -239,6 +239,12 @@ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.or
 
 See [LICENSE](./LICENSE) for more details.
 
+## Support
+
+For support you can [file issues on GitHub](https://github.com/oracle-quickstart/appstack/issues).
+
+You can also send an email to the product team at "appstack_ww at oracle.com".
+
 ## Appendix
 
 ### Build instructions
