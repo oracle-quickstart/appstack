@@ -1,10 +1,20 @@
 # Usage Instructions
 
-The **Stack Configuration** has 6 sections listed below. Once it is configured it can be *deployed* on the Oracle Cloud Infrastructure to provision the resources and deploy your application.
+The **Stack Configuration** has 10 sections listed below. Once it is configured it can be *deployed* on the Oracle Cloud Infrastructure to provision the resources and deploy your application.
+
+## General Configuration
+
+![](./screenshots/1_GeneralConfiguration.png)
+
+Choose the **compute compartment** and **availability domain** where will all resources in the stack be created.
 
 ## Your Application
 
-This section describes the packaging and deployment of your application. The stack supports different kinds of deployments: *source code* deployment, java *artifact* deployment or *container image* deployment. Each type of deployment has different prerequisites and requires different parameters. *Source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (mirrored repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and *container image* deployment requires the *container image* to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
+This section describes the packaging and deployment of your application.
+
+![](./screenshots/2_Application.png)
+
+The stack supports different kinds of deployments: *source code* deployment, java *artifact* deployment or *container image* deployment. Each type of deployment has different prerequisites and requires different parameters. *Source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (mirrored repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and *container image* deployment requires the *container image* to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
 
 - **Application Name:** application identifier, this name will be used as a prefix to some of the resources created by the stack (special characters should be avoided)
 - **Number of deployments:** this is the number of container instances that will be deployed, each container instance will run the application behind a firewall
@@ -26,7 +36,17 @@ This section describes the packaging and deployment of your application. The sta
        - **Full path to the image in the container registry**
        - **Exposed port:** port exposed by the container image
 
+## Application Performance Monitoring (APM)
+
+![](./screenshots/3_APM.png)
+
+Your application will automatically be monitored through APM using the Java Agent.
+
 ## Database
+
+![](./screenshots/4_Database.png)
+
+
 The stack assumes that the persistence is handled by a database and this section lets you configure that database. You can either choose an existing database or create a new one. If you create a new one it will be configured by the stack so that the application can connect to it using network security groups and a private endpoint. If you choose an existing database, you need to configure the network access for the application. For example, if an Autonomous Database Serverless is chosen, access from the application may require either a private endpoint or an ACL rule. 
 
  - Use existing database:
@@ -55,7 +75,11 @@ If you are deploying the application using a *container image*, three environmen
  - **Set password environment variable:** check this checkbox if your application can consume an environment variable to configure the database username (available only if the *application source* is an image).
    - **Database user's password environment variable name:** name of the environment variable the stack will set the database user's password to.
 
-**Other Parameters:** Besides the above-predefined environment variables, the stack allows you to provide other parameters to your application. This can be achieved by providing environment variables, JVM options, and/or program arguments. The use of the JVM option is possible when the *application source* is either *source code* or *artifact*, and the use of program arguments is only possible when the *artifact* type is JAR.
+## Other Parameters
+
+![](./screenshots/5_OtherParams.png)
+
+Besides the above-predefined environment variables, the stack allows you to provide other parameters to your application. This can be achieved by providing environment variables, JVM options, and/or program arguments. The use of the JVM option is possible when the *application source* is either *source code* or *artifact*, and the use of program arguments is only possible when the *artifact* type is JAR.
 
  - **Other environment variables:** If your application consumes environment variables, you can use this field to set these environment variables. Environment variables should be provided as a semicolon-separated list of <name, value> pairs in the following format: var1=value1;var2=value2 ... varN=valueN. These environment variables will then be set on the container instances.
  - **JVM options:** You can also provide JVM options that will be set when starting the Java VM. If the *artifact* type of your application is a JAR, the JVM Options will be set when starting the JAR file and if the *artifact* type is a WAR, the JVM Options will be set when starting Tomcat. All types of JVM options are allowed.
@@ -63,7 +87,11 @@ If you are deploying the application using a *container image*, three environmen
    - Non-Standard options for example setting how much memory will be allocated for your JVM: -Xms1g -Xmx8g
  - **Program arguments:** If your application consumes arguments, you can use this field to set them. Arguments should be provided as a space-separated list and will be passed to the application at start-up : arg1  arg2 ..., argN.
 
-**Application configuration - SSL communication between backends and load balancer:** A certificate is needed to configure the load balancer and the backends so that the communication between them is done using SSL. If the *application source* is either *source code* or *artifact*, the stack will create this certificate, if the *application source* is a *container image* it is required for the *container image* to be configured using a certificate and that this certificate is provided so that the stack can configure the load balancer accordingly.
+## SSL configuration between Load Balancer and backend
+
+![](./screenshots/6_LB_SSL.png)
+
+A certificate is needed to configure the load balancer and the backends so that the communication between them is done using SSL. If the *application source* is either *source code* or *artifact*, the stack will create this certificate, if the *application source* is a *container image* it is required for the *container image* to be configured using a certificate and that this certificate is provided so that the stack can configure the load balancer accordingly.
 
 If the *application source* is either *source code* or *artifact*, the stack creates the self-signed certificate that will be used for the communication between the load balancer and the backends. This self-signed certificate is stored in a JKS keystore. If the *artifact* type is a WAR (web application deployed using Tomcat) Tomcat will be configured to use this keystore. If the *artifact* type is JAR the stack can use properties to configure SSL for the application. By default, Spring boot properties will be used by the stack. A checkbox allows to change that configuration.
 
@@ -81,6 +109,9 @@ If the *application source* is a *container image*, the image must be configured
 
 
 ## Vault
+
+![](./screenshots/7_Vault.png)
+
 A Vault is used to store sensitive information such as authentication tokens and passwords. The stack can either use an existing vault (which can be in a different compartment) or create a new one.
 
 To use an existing key vault :
@@ -95,6 +126,8 @@ To create a new vault:
 
 ## Application URL:
 
+![](./screenshots/8_ApplicationURL.png)
+
 This is optional but if you have a DNS domain that's managed in OCI you can configure the stack to add a new record (hostname) for your application. A certificate will also be needed so that the application can be accessed through HTTPS.
 
  - **DNS zone:** Domain name in which the hostname will be created.
@@ -102,6 +135,8 @@ This is optional but if you have a DNS domain that's managed in OCI you can conf
  - **Certificate OCID:** certificate for the application URL
 
 ## Network
+
+![](./screenshots/9_Network.png)
 
 The stack is designed to create all of its resources in the same VCN. It uses three subnets:
 1. The application subnet which contains the container instances running the application and the container instances running the deployment pipelines;
@@ -149,6 +184,8 @@ By default the load balancer is configured with a minimum and maximum bandwidth 
  - **Status code:** Status code returned by the health checker URL when the application is running
 
 ## Container instance configuration
+
+![](./screenshots/10_ContainerInstance.png)
 
 Finally you can choose the shape and size of the container instances that will run your application.
 
