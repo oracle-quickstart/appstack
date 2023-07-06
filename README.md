@@ -12,7 +12,7 @@ The Container Instances service is an ideal deployment platform as it is serverl
 
 **App Stack for Java** is a customizable Terraform Stack designed to automate the deployment of Java applications (the backend only) in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
 
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.1/appstackforjava.zip) 
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.3/appstackforjava.zip) 
 
 ![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
@@ -103,7 +103,7 @@ You can also send an email to the product team at "appstack_ww at oracle.com".
 ### Build instructions
 To build the zip on a mac from this directory:
 ```
-zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing" -x "*.md" -x "troubleshooting" -x "tutorials" 
+zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
 ```
 
 
