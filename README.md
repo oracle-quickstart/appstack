@@ -85,15 +85,13 @@ request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
 ## License
 
 Copyright (c) 2023, Oracle and/or its affiliates.
-
 Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-
 See [LICENSE](./LICENSE) for more details.
 
 ## Support
 
+Please review the [troubleshooting document](./troubleshooting/troubleshooting.md).
 For support you can [file issues on GitHub](https://github.com/oracle-quickstart/appstack/issues).
-
 You can also send an email to the product team at "appstack_ww at oracle.com".
 
 ## Appendix
@@ -101,7 +99,7 @@ You can also send an email to the product team at "appstack_ww at oracle.com".
 ### Build instructions
 To build the zip on a mac from this directory:
 ```
-zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing" -x "*.md"
+zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing" -x "*.md" -x "troubleshooting" -x "tutorials" 
 ```
 
 
