@@ -2,7 +2,9 @@
 
 This document lists the common errors seen when using the stack.
 
-## The job failed due to an error in the Terraform configuration. To troubleshoot this issue, view the job log.
+## Stack error: pipeline build error
+
+The failure details says: "The job failed due to an error in the Terraform configuration. To troubleshoot this issue, view the job log."
 
 ![](./screenshots/1_statefailed.png)
 
@@ -21,3 +23,23 @@ This indicates that the build pipeline failed. Go to the build pipeline log to s
 
 ![](./screenshots/3_buildpipelinelog.png)
 
+## Stack error: artifact already exists
+
+The failure details says: "The job failed due to an error in the Terraform configuration. To troubleshoot this issue, view the job log."
+
+![](./screenshots/4_artifactalreadyexists.png)
+
+```
+Error: 409-GENERIC_ARTIFACT_METADATA_EXISTS, Generic artifact with repositoryId ocid1.artifactrepository..., artifactPath mytodolist-deploy-script and artifactVersion 1.0.0 exists. Existing genericArtifactId: ocid1.genericartifact.oc1.iad...
+Suggestion: The resource is in a conflicted state. Please retry again or contact support for help with service: Generic Artifacts Content Artifact By Path...
+```
+
+This is a pretty common error. The stack is not able to delete the previous artifact. To fix this, go to the "artifact registry" and manually delete the artifact:
+
+![](./screenshots/5_deleteartifact.png)
+
+## Destroying the stack fails
+
+Before destroying the stack you must manually delete the artifact.
+
+You may also need to manually deletet the VCN that the stack created.

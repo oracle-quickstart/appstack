@@ -2,7 +2,7 @@
 
 In this tutorial we'll deploy a sample SpringBoot application using the stack.
 
-## 1. Prepare the code repository
+## Prepare the code repository
 
 In GitHub, fork the following repo: [oci-react-samples](https://github.com/oracle/oci-react-samples/tree/spring-appstack). Note that we will only used the branch "spring-appstack" for this tutorial.
 
@@ -12,7 +12,7 @@ If you don't already have Personal Token, create one and note it down. We'll use
 
 ![](./screenshots/2_githubtoken.png)
 
-## 2. Create the compartment, vault and dynamic group in OCI
+## Create the compartment, vault and dynamic group in OCI
 
 ### Compartment
 
@@ -100,5 +100,36 @@ We're not creating any DNS record in this tutorial. If you have a domain name an
 For the network we can keep the default values:
 ![](./screenshots/24_network.png)
 
+## Execute the stack
+
 You can then apply the stack:
 ![](./screenshots/25_applystack.png)
+
+## Review the resources
+
+It may take up to 10 minutes to execute the stack. You should then see this:
+![](./screenshots/26_stacksuccess.png)
+
+Your app URL will be displayed under "Application Information":
+![](./screenshots/27_appinformation.png)
+
+You can verify that the application is running:
+![](./screenshots/28_iamalive.png)
+
+The application exposes REST APIs to manage a todolist:
+```
+jdelavar@jdelavar-mac ~ % curl -X POST http://129.80.144.252/todolist -H 'Content-Type: application/json' -d '{"description":"Complete app stack tuto"}'
+jdelavar@jdelavar-mac ~ % curl -s http://129.80.144.252/todolist | json_pp
+[
+   {
+      "creation_ts" : "2023-07-06T15:47:35.341121Z",
+      "description" : "Complete app stack tuto",
+      "done" : false,
+      "id" : 1
+   }
+]
+```
+![](./screenshots/29_containerinstances.png)
+![](./screenshots/30_ciinstanc.png)
+![](./screenshots/31_viewlogs.png)
+![](./screenshots/32_logs.png)
