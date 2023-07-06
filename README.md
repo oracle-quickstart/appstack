@@ -75,7 +75,11 @@ Please refer to the [usage instructions](./usage_instructions.md) for details ab
 
 ## Destroying the stack
 
-Before you can destroy the stack and all the resources that have been created you must manually delete the artifact that the stack has created under the "Stack registry".
+Before you can destroy the stack and all the resources that have been created you must manually delete the artifact that the stack has created under the "Artifact Registry".
+
+## Tutorial
+
+[MyTodoList SpringBoot application tutorial](./tutorials/mytodolist/tutorial.md).
 
 ## Contributing
 

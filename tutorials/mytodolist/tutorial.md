@@ -1,6 +1,6 @@
-# App Stack for Java tutorial
+# SpringBoot app deployed on OCI using App Stack for Java
 
-In this tutorial we'll deploy a sample SpringBoot application using the stack.
+In this tutorial we'll deploy a sample SpringBoot application using the stack. The application is a simple REST backend sample that can be found [here](https://github.com/oracle/oci-react-samples/tree/spring-appstack).
 
 ## Prepare the code repository
 
