@@ -89,7 +89,7 @@ Go to the [App Stack Product page](https://github.com/oracle-quickstart/appstack
 ![](./screenshots/16_stackbutton.png)
 ![](./screenshots/17_createstack.png)
 ![](./screenshots/18_generalconfig.png)
-For the "DevOps repo", be sure to entre the right OCID. It should start with *ocid1.devopsrepository.* and the branch we're using is **spring-appstack**. The artifact **./target/mytodolist-0.0.1-SNAPSHOT.jar**.
+For the "DevOps repo", be sure to enter the right OCID. It should start with *ocid1.devopsrepository.* and the branch we're using is **spring-appstack**. The artifact **./target/mytodolist-0.0.1-SNAPSHOT.jar**.
 ![](./screenshots/19_appconfig.png)
 ![](./screenshots/20_apm.png)
 ![](./screenshots/21_db.png)
