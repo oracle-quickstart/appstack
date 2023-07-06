@@ -84,14 +84,21 @@ Your repo should now be created. Note its OCID as it will be used later.
 
 ## Configure the stack
 
-Go to the ![App Stack Product page](https://github.com/oracle-quickstart/appstack) and click on the "Deploy" button:
+Go to the [App Stack Product page](https://github.com/oracle-quickstart/appstack) and click on the "Deploy" button:
 
 ![](./screenshots/16_stackbutton.png)
 ![](./screenshots/17_createstack.png)
 ![](./screenshots/18_generalconfig.png)
+For the "DevOps repo", be sure to entre the right OCID. It should start with *ocid1.devopsrepository.* and the branch we're using is **spring-appstack**. The artifact **./target/mytodolist-0.0.1-SNAPSHOT.jar**.
 ![](./screenshots/19_appconfig.png)
 ![](./screenshots/20_apm.png)
 ![](./screenshots/21_db.png)
 ![](./screenshots/22_vault.png)
+We're not creating any DNS record in this tutorial. If you have a domain name and you're using OCI to manage your DNS entries then you can choose to make the stack create a new record for the application by checking the checkbox below.
 ![](./screenshots/23_url.png)
+
+For the network we can keep the default values:
 ![](./screenshots/24_network.png)
+
+You can then apply the stack:
+![](./screenshots/25_applystack.png)
