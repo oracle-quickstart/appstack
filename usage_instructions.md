@@ -124,7 +124,7 @@ To create a new vault:
 
  - **Key vault display name:** user-friendly name of the vault to create. The vault will be created in the same compartment as the rest of the resources created by the stack.
 
-## Application URL:
+## Application URL
 
 ![](./screenshots/8_ApplicationURL.png)
 

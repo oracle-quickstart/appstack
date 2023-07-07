@@ -12,7 +12,7 @@ The Container Instances service is an ideal deployment platform as it is serverl
 
 **App Stack for Java** is a customizable Terraform Stack designed to automate the deployment of Java applications (the backend only) in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
 
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.1/appstackforjava.zip) 
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.3/appstackforjava.zip) 
 
 ![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
@@ -75,7 +75,11 @@ Please refer to the [usage instructions](./usage_instructions.md) for details ab
 
 ## Destroying the stack
 
-Before you can destroy the stack and all the resources that have been created you must manually delete the artifact that the stack has created under the "Stack registry".
+Before you can destroy the stack and all the resources that have been created you must manually delete the artifact that the stack has created under the "Artifact Registry".
+
+## Tutorial
+
+[MyTodoList SpringBoot application tutorial](./tutorials/mytodolist/tutorial.md).
 
 ## Contributing
 
@@ -85,15 +89,13 @@ request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
 ## License
 
 Copyright (c) 2023, Oracle and/or its affiliates.
-
 Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-
 See [LICENSE](./LICENSE) for more details.
 
 ## Support
 
+Please review the [troubleshooting document](./troubleshooting/troubleshooting.md).
 For support you can [file issues on GitHub](https://github.com/oracle-quickstart/appstack/issues).
-
 You can also send an email to the product team at "appstack_ww at oracle.com".
 
 ## Appendix
@@ -101,7 +103,7 @@ You can also send an email to the product team at "appstack_ww at oracle.com".
 ### Build instructions
 To build the zip on a mac from this directory:
 ```
-zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images" -x "listing" -x "*.md"
+zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
 ```
 
 

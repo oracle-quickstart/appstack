@@ -266,7 +266,7 @@ variables:
     type: boolean
     default: true
     required: true
-    title : Use existing an existing database (Autonomous Database Serverless)
+    title: Use existing database (Autonomous Database Serverless)
   autonomous_database_display_name:
     type: string
     required: true
