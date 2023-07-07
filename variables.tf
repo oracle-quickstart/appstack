@@ -456,7 +456,11 @@ locals {
   # vcn DNS label
   vcn-dns-label = "vcn${formatdate("MMDDhhmm", timestamp())}"
   # subnet DNS label
-  subnet-dns-label = "sn${formatdate("MMDDhhmm", timestamp())}"
+  app-subnet-dns-label = "app${formatdate("MMDDhhmm", timestamp())}"
+  # subnet DNS label
+  lb-subnet-dns-label = "lb${formatdate("MMDDhhmm", timestamp())}"
+  # subnet DNS label
+  db-subnet-dns-label = "db${formatdate("MMDDhhmm", timestamp())}"
   # full image path on registry
   image-remote-tag = (!local.use-image
         ? "${local.container-registry-repo}/${local.namespace}/${local.repository-name}:${local.image-name}"
