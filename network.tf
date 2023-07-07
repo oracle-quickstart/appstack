@@ -16,8 +16,8 @@ resource "oci_core_vcn" "app_oci_core_vnc" {
 resource "oci_core_subnet" "app_oci_core_subnet" {
 	cidr_block = var.app_subnet_cidr
 	compartment_id = var.compartment_id
-	display_name = "app-subnet"
-	dns_label = "appsubnet"
+	display_name = "app-subnet-${formatdate("MMDDhhmm", timestamp())}"
+	dns_label = local.app-subnet-dns-label
 	route_table_id = oci_core_route_table.private_route_table[count.index].id
 	vcn_id = data.oci_core_vcn.app_vcn.id
   # security_list_ids = [oci_core_security_list.app_security_list.id]
@@ -30,8 +30,8 @@ resource "oci_core_subnet" "app_oci_core_subnet" {
 resource "oci_core_subnet" "lb_oci_core_subnet" {
 	cidr_block = var.lb_subnet_cidr
 	compartment_id = var.compartment_id
-	display_name = "lb-subnet"
-	dns_label = "lbsubnet"
+	display_name = "lb-subnet-${formatdate("MMDDhhmm", timestamp())}"
+	dns_label = local.lb-subnet-dns-label
 	route_table_id = "${data.oci_core_vcn.app_vcn.default_route_table_id}"
 	vcn_id = data.oci_core_vcn.app_vcn.id
   prohibit_internet_ingress = var.open_https_port ? false : true
@@ -44,8 +44,8 @@ resource "oci_core_subnet" "lb_oci_core_subnet" {
 resource "oci_core_subnet" "db_oci_core_subnet" {
 	cidr_block = var.db_subnet_cidr
 	compartment_id = var.compartment_id
-	display_name = "db-subnet"
-	dns_label = "dbsubnet"
+	display_name = "db-subnet-${formatdate("MMDDhhmm", timestamp())}"
+	dns_label = local.db-subnet-dns-label
 	route_table_id = "${data.oci_core_vcn.app_vcn.default_route_table_id}"
 	vcn_id = data.oci_core_vcn.app_vcn.id
   # security_list_ids = [oci_core_security_list.db_security_list[0].id]
