@@ -218,15 +218,13 @@ resource "oci_devops_trigger" "generated_oci_devops_trigger" {
 # run the pipeline
 resource "oci_devops_build_run" "create_docker_image" {
   depends_on = [
-    oci_identity_policy.devops_secrets_policy,
     oci_artifacts_container_repository.application-container-repository,
     oci_devops_build_pipeline.build_pipeline,
     oci_devops_build_pipeline.build_pipeline_artifact,
     oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
     oci_devops_build_pipeline_stage.art_build_pipeline_stage,
     null_resource.create_config_repo_jar,
-    null_resource.create_config_repo_war,
-    oci_identity_policy.devops_secrets_policy
+    null_resource.create_config_repo_war
   ]
   build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
   display_name = "triggered-by-terraform"
