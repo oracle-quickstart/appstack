@@ -4,8 +4,13 @@
 
 # wait for policy to be active
 resource "time_sleep" "wait_60_seconds" {
-  depends_on = [ oci_identity_policy.container_instances_read_repo ]
-  create_duration = "60s"
+  depends_on = [ 
+    oci_identity_policy.container_instances_read_repo,
+    oci_core_network_security_group.app_nsg,
+    oci_core_network_security_group_security_rule.app_egress_service,
+    oci_core_service_gateway.service_gateway
+  ]
+  create_duration = "90s"
 }
 
 # create container instances
@@ -14,8 +19,6 @@ resource "oci_container_instances_container_instance" "app_container_instance" {
     oci_devops_build_run.create_docker_image,
     oci_core_subnet.app_oci_core_subnet,
     oci_core_network_security_group.app_nsg,
-    oci_identity_user_group_membership.user_group_membership,
-    oci_identity_policy.image_access_to_user,
     time_sleep.wait_60_seconds
   ]
   availability_domain = var.availability_domain

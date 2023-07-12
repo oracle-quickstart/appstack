@@ -6,7 +6,7 @@
 # create container registry in case the application is not an image (so
 # either source code or artifact)
 resource "oci_artifacts_container_repository" "application-container-repository" {
-  compartment_id = var.compartment_id
+  compartment_id = var.devops_compartment
   display_name = local.repository-name
 
   is_immutable = false
@@ -30,14 +30,14 @@ resource "oci_identity_api_key" "dbconnection_api_key" {
 # if the app is an artifact (jar/war), we need to create a topic in order
 # to create a project in devops to host the config repo
 resource "oci_ons_notification_topic" "topic" {
-  compartment_id = var.compartment_id
+  compartment_id = var.devops_compartment
   name = var.application_name
   count = local.use-artifact ? 1 : 0 # app is an artifact
 }
 
 # now we can create the project (jar/war case)
 resource "oci_devops_project" "project" {
-  compartment_id = var.compartment_id
+  compartment_id = var.devops_compartment
   name = var.application_name
   notification_config {
     topic_id = oci_ons_notification_topic.topic[0].id
@@ -46,7 +46,7 @@ resource "oci_devops_project" "project" {
 }
 
 resource "oci_logging_log_group" "devops_log_group" {
-  compartment_id = var.compartment_id
+  compartment_id = var.devops_compartment
   display_name = "logGroup"
   count = local.use-artifact ? 1 : 0
 }
@@ -289,13 +289,13 @@ resource "oci_devops_deploy_pipeline" "deploy_pipeline" {
 
 # Create a projet to contain deploy pipeline when deploying for container image
 resource "oci_ons_notification_topic" "deploy_image_topic" {
-  compartment_id = var.compartment_id
+  compartment_id = var.devops_compartment
   name = "topic-${var.application_name}"
   count = (local.use-image ? 1 : 0)
 }
 
 resource "oci_devops_project" "deploy_image_project" {
-  compartment_id = var.compartment_id
+  compartment_id = var.devops_compartment
   name = "deploy-${var.application_name}"
   notification_config {
     topic_id = oci_ons_notification_topic.deploy_image_topic[0].id

@@ -68,8 +68,7 @@ resource "null_resource" "create_config_repo_war" {
     local_file.wallet,
     local_file.self_signed_certificate,
     local_file.oci_build_config,
-    random_password.wallet_password,
-    oci_identity_policy.user_manage_all_policy
+    random_password.wallet_password
   ]
 
   # clone new repository
@@ -217,8 +216,7 @@ resource "null_resource" "create_config_repo_jar" {
     local_file.wallet,
     local_file.self_signed_certificate,
     local_file.oci_build_config,
-    random_password.wallet_password,
-    oci_identity_policy.user_manage_all_policy
+    random_password.wallet_password
   ]
 
   # clone new repository

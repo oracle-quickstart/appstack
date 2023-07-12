@@ -86,6 +86,12 @@ variable "key_id" {
   default = "none"
 }
 
+variable "devops_compartment" {
+  type = string
+  default = ""
+  description = "Compartment containing the DevOps project"
+}
+
 # OCI devops repository
 variable "repo_name" {
   type = string
@@ -113,6 +119,12 @@ variable "artifact_location" {
 # Number of copies
 variable "nb_copies" {
   type = number
+}
+
+variable "dns_compartment" {
+  type = string
+  default = ""
+  description = "Compartment containing the DNS Zone and Certificate"
 }
 
 variable "certificate_ocid" {
@@ -426,19 +438,33 @@ variable "is_free_tier" {
   default = false
 }
 
+variable "create_token" {
+  type = bool
+  description = "Create authentication token for current user"
+  default = false
+}
+
+variable "current_user_token" {
+  type = string
+  description = "Authentication token for the current user"
+  default = ""
+}
+
 locals {
   # region_key
   region_key = lower(data.oci_identity_regions.current_region.regions[0].key)
   # namespace
   namespace = "${data.oci_objectstorage_namespace.os_namespace.namespace}"
   # Service username
-  service-username = "${var.application_name}-user"
+  service-username = data.oci_identity_user.current_user.name
   # login, tenancy + username (DevOps)
   login = "${data.oci_identity_tenancy.tenancy.name}/${local.service-username}"
   # login, namespace + username (Container Registry)
   login_container = "${local.namespace}/${local.service-username}"
   # authentication token
-  app_auth_token = oci_identity_auth_token.auth_token.token
+  app_auth_token = var.create_token ? oci_identity_auth_token.auth_token[0].token : var.current_user_token
+  # Authentication token secret
+  auth_token_secret = oci_vault_secret.auth_token_secret.id
   # Container registry url
   container-registry-repo = "${local.region_key}.ocir.io"
   # image name
@@ -476,7 +502,7 @@ locals {
   config_repo_name = "${var.application_name}-config"
   config_repo_url = (local.use-image 
     ? ""
-    : replace(oci_devops_repository.config_repo[0].http_url, "https://", "https://${urlencode(local.login)}:${urlencode(oci_identity_auth_token.auth_token.token)}@"))
+    : replace(oci_devops_repository.config_repo[0].http_url, "https://", "https://${urlencode(local.login)}:${urlencode(local.app_auth_token)}@"))
   # database OCID
   database_ocid = (var.use_existing_database ? var.autonomous_database : oci_database_autonomous_database.database[0].id)
   # database username

@@ -32,7 +32,7 @@ resource "oci_vault_secret" "auth_token_secret" {
       content_type = "BASE64"
 
       #Optional
-      content = base64encode(oci_identity_auth_token.auth_token.token)
+      content = base64encode(local.app_auth_token)
       name = "auth_token_content_${formatdate("MMDDhhmm", timestamp())}"
   }
   secret_name ="auth_token_secret_${formatdate("MMDDhhmm", timestamp())}"

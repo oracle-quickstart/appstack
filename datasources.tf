@@ -102,7 +102,7 @@ data "template_file" "oci_build_config" {
     login = local.login_container
     build_command = var.build_command
     artifact_location = var.artifact_location
-    oci_token = oci_vault_secret.auth_token_secret.id
+    oci_token = local.auth_token_secret
     repo_name = (local.use-repository ? data.oci_devops_repository.devops_repository[0].name : "")
     config_repo_name = local.config_repo_name
     artifactId = (local.use-artifact ? var.artifact_id : "")
@@ -122,7 +122,7 @@ data "template_file" "oci_deploy_config" {
   ]
   template = "${file("${path.module}/deploy.yaml.template")}"
   vars = {
-    oci_token = oci_vault_secret.auth_token_secret.id
+    oci_token = local.auth_token_secret
     config_repo_url = local.config_repo_url
     config_repo_name = local.config_repo_name
     artifact_ocid = oci_generic_artifacts_content_artifact_by_path.update_container_instance_script.id
@@ -157,7 +157,7 @@ data "oci_devops_repository" "devops_repository" {
 }
 
 data "oci_dns_zones" "zones" {
-    compartment_id = var.compartment_id
+    compartment_id = var.dns_compartment
     name = var.zone
     zone_type = "PRIMARY"
 }

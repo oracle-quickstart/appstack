@@ -133,7 +133,7 @@ resource "oci_dns_rrset" "subdomain_rrset" {
   domain = local.domain_name
   rtype = "A"
   zone_name_or_id = data.oci_dns_zones.zones.zones[0].id
-  compartment_id = var.compartment_id
+  compartment_id = var.dns_compartment
 
   items {
     domain = local.domain_name
