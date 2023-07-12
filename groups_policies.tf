@@ -58,25 +58,6 @@ resource "oci_identity_tag" "applciation_name_tag" {
   tag_namespace_id = oci_identity_tag_namespace.application_tag_namespace.id
 }
 
-# resource "oci_identity_user" "application_user" {
-# #  provider = oci.home-provider
-#   compartment_id = var.tenancy_ocid
-#   description = "Service user for ${var.application_name}"
-#   name = local.service-username
-#   # email = "${local.service-username}@yourdomain.com"
-# }
-
-# resource "oci_identity_user_capabilities_management" "application_user_capabilities" {
-# #  provider = oci.home-provider
-#   user_id = oci_identity_user.application_user.id
-
-#   can_use_api_keys             = "false"
-#   can_use_auth_tokens          = "true"
-#   can_use_console_password     = "false"
-#   can_use_customer_secret_keys = "false"
-#   can_use_smtp_credentials     = "false"
-# }
-
 # Create an authentication token for user to connect to repositories
 resource "oci_identity_auth_token" "auth_token" {
 #  provider = oci.home-provider
@@ -94,40 +75,6 @@ resource "oci_identity_dynamic_group" "devops_dynamic_group" {
   count = (local.use-image ? 0 : 1)
 }
 
-
-# resource "oci_identity_dynamic_group" "instances_dynamic_group" {
-#   compartment_id = var.tenancy_ocid
-#   description = "instances-${var.application_name}"
-#   matching_rule = "all {tag.application.name.value='${var.application_name}'}"
-#   name = "instances-${var.application_name}"
-# }
-
-#  resource "oci_identity_group" "user_group_application" {
-# #   provider = oci.home-provider
-#    compartment_id = var.tenancy_ocid
-#    description = "${var.application_name}-group"
-#    name = "user-group-${var.application_name}"
-#  }
-
-#  resource "oci_identity_user_group_membership" "user_group_membership" {
-# #  provider = oci.home-provider
-#   group_id = oci_identity_group.user_group_application.id
-#   user_id = oci_identity_user.application_user.id
-#  }
-
-#  resource "oci_identity_policy" "user_manage_all_policy" {
-#   depends_on = [ oci_identity_group.user_group_application ]
-# #  provider = oci.home-provider
-#   compartment_id = var.compartment_id
-#   description = "allow-user-devops-${var.application_name}"
-#   name = "allow-user-devops-${var.application_name}"
-#   statements = [
-#     "Allow group 'user-group-${var.application_name}' to use devops-repository in compartment ${data.oci_identity_compartment.compartment.name}",
-#     "Allow group 'user-group-${var.application_name}' to manage repos in compartment ${data.oci_identity_compartment.compartment.name} where ANY {request.permission = 'REPOSITORY_READ', request.permission = 'REPOSITORY_UPDATE', request.permission = 'REPOSITORY_CREATE'}"
-#   ]
-#   count = (local.use-image ? 0 : 1)
-#  }
-
 resource "oci_identity_policy" "devops_secrets_policy" {
 #  provider = oci.home-provider
   compartment_id = var.tenancy_ocid
@@ -141,14 +88,4 @@ resource "oci_identity_policy" "devops_secrets_policy" {
   count = (local.use-image ? 0 : 1)
 }
 
-# resource "oci_identity_policy" "image_access_to_user" {
-# #  provider = oci.home-provider
-#   compartment_id = var.compartment_id
-#   description = "allow-user-pull-image-${var.application_name}"
-#   name = "allow-user-pull-image-${var.application_name}"
-#   statements = [
-#     "Allow group 'user-group-${var.application_name}' to read repos in compartment ${data.oci_identity_compartment.compartment.name}"
-#   ]
-#   count = (local.use-image ? 1 : 0)
-# }
 

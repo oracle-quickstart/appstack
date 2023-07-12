@@ -135,9 +135,6 @@ variableGroups:
       - shape
       - memory_in_gbs
       - ocpus
-  - title: "Test file"
-    variables:
-      - generic_file
 
 variables:
   # General Configuration
