@@ -157,7 +157,7 @@ data "oci_devops_repository" "devops_repository" {
 }
 
 data "oci_dns_zones" "zones" {
-    compartment_id = var.dns_compartment
+    compartment_id = (var.dns_compartment == "" ? var.compartment_id : var.dns_compartment)
     name = var.zone
     zone_type = "PRIMARY"
 }

@@ -594,6 +594,7 @@ variables:
   dns_compartment:
     type: oci:identity:compartment:id
     required: true
+    default: compartment_ocid
     title: DNS and Certificate compartement
     description: Compartment containing the DNS Zone and the Certificate
     visible: create_fqdn
