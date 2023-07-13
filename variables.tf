@@ -438,7 +438,7 @@ variable "is_free_tier" {
   default = false
 }
 
-variable "create_token" {
+variable "use_existing_token" {
   type = bool
   description = "Create authentication token for current user"
   default = false
@@ -446,8 +446,9 @@ variable "create_token" {
 
 variable "current_user_token" {
   type = string
-  description = "Authentication token for the current user"
+#  description = "Authentication token for the current user"
   default = ""
+  sensitive = true
 }
 
 locals {
@@ -462,7 +463,7 @@ locals {
   # login, namespace + username (Container Registry)
   login_container = "${local.namespace}/${local.service-username}"
   # authentication token
-  app_auth_token = var.create_token ? oci_identity_auth_token.auth_token[0].token : var.current_user_token
+  app_auth_token = var.use_existing_token ? var.current_user_token : oci_identity_auth_token.auth_token[0].token
   # Authentication token secret
   auth_token_secret = oci_vault_secret.auth_token_secret.id
   # Container registry url

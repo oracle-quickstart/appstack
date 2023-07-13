@@ -52,6 +52,15 @@ variableGroups:
       - artifact_id
       - image_path
       - exposed_port
+  - title: "Stack authentication"
+    variables:
+      - use_existing_token
+      - current_user_token
+      - use_existing_vault
+      - new_vault_display_name
+      - vault_compartment_id
+      - vault_id
+      - key_id
   - title: "Application Performance Monitoring"
     variables:
       - is_free_tier
@@ -90,15 +99,6 @@ variableGroups:
       - cert_pem
       - private_key_pem
       - ca_pem
-  - title: "Vault"
-    variables:
-      - use_existing_vault
-      - new_vault_display_name
-      - vault_compartment_id
-      - vault_id
-      - key_id
-      - create_token
-      - current_user_token
   - title: "Application URL"
     variables:
       - create_fqdn
@@ -394,18 +394,17 @@ variables:
     visible:
       and:
         - use_existing_vault
-  create_token:
+  use_existing_token:
     type: boolean
     required: true
-    title: Create a new authentication token for the current user
-    default: false
+    title: Use existing authentication token
+    description: This token will be used by the stack to authenticate the user when connecting to the code repository or container registry.
+    default: true
   current_user_token:
-    type: string
+    type: password
     required: true
     title: User's authentication token
-    visible: 
-      not:
-        - create_token
+    visible: use_existing_token
   # Application configuration
   use_connection_url_env:
     type: boolean
