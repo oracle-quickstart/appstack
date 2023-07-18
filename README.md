@@ -28,7 +28,7 @@ Your Java application can be packaged in 3 ways:
 In all cases the deployment is done on Container Instances behind a load balancer.
 
 ## Release and status
- - This is v0.1.3: initial release as a preview.
+ - This is v0.1.4: initial release as a preview.
 
 ## Prerequisites
 
