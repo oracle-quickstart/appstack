@@ -66,7 +66,10 @@ steps:
     timeoutInSeconds: 600
     failImmediatelyOnError: true
     command: |
-      docker build . --file Dockerfile --tag ${image_remote_tag}
+      cd $${OCI_WORKSPACE_DIR}/${repo_name}
+      export commit=$(git rev-list --all --max-count=1 --abbrev-commit)
+      cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
+      docker build . --file Dockerfile --tag ${image_remote_tag}:${image_tag}-$commit --tag ${image_latest_tag}
   - type: Command
     name: Login to repo
     timeoutInSeconds: 900
@@ -78,4 +81,4 @@ steps:
     timeoutInSeconds: 600
     failImmediatelyOnError: true
     command: |
-      docker push ${image_remote_tag}
+      docker push ${image_remote_tag} --all-tags

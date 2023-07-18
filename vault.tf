@@ -23,7 +23,7 @@ resource "oci_kms_key" "app_key" {
 # Create an authentication token for user to connect to repositories
 resource "oci_identity_auth_token" "auth_token" {
 #  provider = oci.home-provider
-  description = "Authentication token for ${var.application_name}"
+  description = "Authentication token for ${local.application_name}"
   user_id = var.current_user_ocid
   count = (var.use_existing_token ? 0 : 1)
 }

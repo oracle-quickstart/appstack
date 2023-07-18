@@ -452,6 +452,8 @@ variable "current_user_token" {
 }
 
 locals {
+  # application name with branch
+  application_name = (var.branch == "" ? var.application_name : "${var.application_name}-${var.branch}")
   # region_key
   region_key = lower(data.oci_identity_regions.current_region.regions[0].key)
   # namespace
@@ -469,17 +471,17 @@ locals {
   # Container registry url
   container-registry-repo = "${local.region_key}.ocir.io"
   # image name
-  image-name = "${var.application_name}-image"
+  image-name = "${local.application_name}-image"
   # load balancer name
-  load-balancer-name = "${var.application_name}-lb"
+  load-balancer-name = "${local.application_name}-lb"
   # repository name
-  repository-name = lower("${var.application_name}-repository")
+  repository-name = lower("${local.application_name}-repository")
   # instance name
-  instance-name = "${var.application_name}-instance"
+  instance-name = "${local.application_name}-instance"
   # vcn name
-  vcn-name = "${var.application_name}-vcn"
+  vcn-name = "${local.application_name}-vcn"
   # internet gateway name
-  internet-gateway-name = "${var.application_name}-internet-gateway"
+  internet-gateway-name = "${local.application_name}-internet-gateway"
   # vcn DNS label
   vcn-dns-label = "vcn${formatdate("MMDDhhmm", timestamp())}"
   # subnet DNS label
@@ -490,17 +492,21 @@ locals {
   db-subnet-dns-label = "db${formatdate("MMDDhhmm", timestamp())}"
   # full image path on registry
   image-remote-tag = (!local.use-image
-        ? "${local.container-registry-repo}/${local.namespace}/${local.repository-name}:${local.image-name}"
+        ? "${local.container-registry-repo}/${local.namespace}/${local.repository-name}"
+        : var.image_path)
+  # full image path on registry
+  image-latest-tag = (!local.use-image
+        ? "${local.container-registry-repo}/${local.namespace}/${local.repository-name}:latest"
         : var.image_path)
   # bucket name
-  bucket_name = "${var.application_name}-bucket"
+  bucket_name = "${local.application_name}-bucket"
   
   # dbconnection_api_key_pem = (
   #   length(data.oci_identity_api_keys.dbconnection_api_key.api_keys) == 0
   #     ? oci_identity_api_key.dbconnection_api_key[0].key_value
   #     : data.oci_identity_api_keys.dbconnection_api_key.api_keys[0].key_value
   # )
-  config_repo_name = "${var.application_name}-config"
+  config_repo_name = "${local.application_name}-config"
   config_repo_url = (local.use-image 
     ? ""
     : replace(oci_devops_repository.config_repo[0].http_url, "https://", "https://${urlencode(local.login)}:${urlencode(local.app_auth_token)}@"))
@@ -555,7 +561,7 @@ locals {
   # Convert list to map
   env_variables = { for env in local.env_variables_list : env.name => env.value }
   other_env_variables = (var.other_environment_variables != "" ? { for env in split(";", var.other_environment_variables) : split("=", env)[0] => split("=", env)[1] } : {})
-  deploy_artifact_path = "${var.application_name}-deploy-script"
+  deploy_artifact_path = "${local.application_name}-deploy-script"
   deploy_artifact_version = "1.0.0"
   vcn_id = (var.create_new_vcn ? oci_core_vcn.app_oci_core_vnc[0].id : var.existing_vcn_id)
   app_subnet_id = (var.use_existing_app_subnet ? var.existing_app_subnet_id : oci_core_subnet.app_oci_core_subnet[0].id)

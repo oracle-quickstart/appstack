@@ -13,10 +13,10 @@ env:
 inputArtifacts:
   - name: javaapp
     type: GENERIC_ARTIFACT
-    artifactId: ${artifactId}
+    artifactId: $${artifactId}
     registryId: ${registryId} 
-    path: "javaapp"
-    version: "0.0.1"
+    path: ${artifact_path}
+    version: $${artifact_version}
     location: $${OCI_WORKSPACE_DIR}/${config_repo_name}/${fileName}
 steps: 
   - type: Command
@@ -40,7 +40,7 @@ steps:
     timeoutInSeconds: 600
     failImmediatelyOnError: true
     command: |
-      docker build . --file Dockerfile --tag ${image_remote_tag}
+      docker build . --file Dockerfile --tag ${image_remote_tag}:${image_tag}-$${artifact_version} --tag ${image_latest_tag}
   - type: Command
     name: Login to repo
     timeoutInSeconds: 900
@@ -52,4 +52,4 @@ steps:
     timeoutInSeconds: 600
     failImmediatelyOnError: true
     command: |
-      docker push ${image_remote_tag}
+      docker push ${image_remote_tag} --all-tags

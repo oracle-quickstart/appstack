@@ -90,6 +90,11 @@ data "template_file" "oci_config" {
   }
 }
 
+data "oci_artifacts_generic_artifact" "app_artifact" {
+  artifact_id = var.artifact_id
+  count = local.use-artifact ? 1 : 0
+}
+
 # build spec file
 data "template_file" "oci_build_config" {
   depends_on = [
@@ -98,10 +103,14 @@ data "template_file" "oci_build_config" {
   template = "${(local.use-repository ? file("${path.module}/build-repo.yaml.template") : file("${path.module}/build-artifact.yaml.template"))}"
   vars = {
     image_remote_tag = "${local.image-remote-tag}"
+    image_latest_tag = "${local.image-latest-tag}"
+    image_tag = "${local.image-name}"
     container_registry_repo = "${local.container-registry-repo}"
     login = local.login_container
     build_command = var.build_command
     artifact_location = var.artifact_location
+    artifact_path = (local.use-artifact ? data.oci_artifacts_generic_artifact.app_artifact[0].artifact_path : "")
+    artifact_version = (local.use-artifact ? data.oci_artifacts_generic_artifact.app_artifact[0].version : "")
     oci_token = local.auth_token_secret
     repo_name = (local.use-repository ? data.oci_devops_repository.devops_repository[0].name : "")
     config_repo_name = local.config_repo_name
@@ -140,7 +149,7 @@ data "template_file" "deploy_script" {
   template = "${file("${path.module}/deploy.sh.template")}"
   vars = {
     "backend_name" = "${oci_container_instances_container_instance.app_container_instance[count.index].vnics[0].private_ip}:${var.exposed_port}"
-    "backend_set_name" = "${local.load-balancer-name}_bset"
+    "backend_set_name" = "${var.application_name}_bset"
     "load_balancer_id" = oci_load_balancer.flexible_loadbalancer.id
     "container_instance_id" = oci_container_instances_container_instance.app_container_instance[count.index].id
   }

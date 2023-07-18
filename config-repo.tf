@@ -332,7 +332,7 @@ resource "oci_artifacts_repository" "application_repository" {
   compartment_id = var.compartment_id
   is_immutable = true
   repository_type = "GENERIC"
-  display_name = "${var.application_name}-repository"
+  display_name = "${local.application_name}-repository"
 }
 
 resource "oci_generic_artifacts_content_artifact_by_path" "update_container_instance_script" {

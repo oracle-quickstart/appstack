@@ -47,12 +47,12 @@ resource "oci_devops_project" "project" {
 
 resource "oci_logging_log_group" "devops_log_group" {
   compartment_id = var.devops_compartment
-  display_name = "logGroup"
+  display_name = "logGroup-${formatdate("MMDDhhmm", timestamp())}"
   count = local.use-artifact ? 1 : 0
 }
 
 resource "oci_logging_log" "devops_log" {
-  display_name = "log"
+  display_name = "log-${formatdate("MMDDhhmm", timestamp())}"
   log_group_id = oci_logging_log_group.devops_log_group[0].id
   log_type     = "SERVICE"
   configuration {
@@ -72,14 +72,14 @@ resource "oci_logging_log" "devops_log" {
 resource "oci_devops_build_pipeline" "build_pipeline" {
   project_id = local.project_id
   description = "Build container image"
-  display_name = "${var.application_name}-build"
+  display_name = "${local.application_name}-build"
   count = local.use-repository ? 1 : 0
 }
 
 resource "oci_devops_build_pipeline" "build_pipeline_artifact" {
   project_id = local.project_id
   description = "Build container image"
-  display_name = "${var.application_name}-build"
+  display_name = "${local.application_name}-build"
   build_pipeline_parameters {
     items {
       default_value = local.use-artifact ? var.artifact_id : "none"
@@ -87,6 +87,13 @@ resource "oci_devops_build_pipeline" "build_pipeline_artifact" {
 
       #Optional
       description = "Artifact to deploy"
+    }
+    items {
+      default_value = local.use-artifact ? data.oci_artifacts_generic_artifact.app_artifact[0].version : "none"
+      name = "artifact_version"
+
+      #Optional
+      description = "Artifact version"
     }
   }
   count = local.use-artifact ? 1 : 0
@@ -164,7 +171,7 @@ resource "oci_devops_build_pipeline_stage" "art_build_pipeline_stage" {
   }
   build_spec_file = "build_spec.yaml"
   description = "Build container image"
-  display_name = "${var.application_name}-build-stage"
+  display_name = "${local.application_name}-build-stage"
   image = var.devops_pipeline_image
   is_pass_all_parameters_enabled = false
   primary_build_source = oci_devops_repository.config_repo[0].name
@@ -208,7 +215,7 @@ resource "oci_devops_trigger" "generated_oci_devops_trigger" {
 	  }
 	}
 	}
-	display_name = "${var.application_name}-trigger"
+	display_name = "${local.application_name}-trigger"
 	project_id = local.project_id
 	repository_id = data.oci_devops_repository.devops_repository[0].id
 	trigger_source = "DEVOPS_CODE_REPOSITORY"
@@ -226,6 +233,19 @@ resource "oci_devops_build_run" "create_docker_image" {
     null_resource.create_config_repo_jar,
     null_resource.create_config_repo_war
   ]
+  dynamic "build_run_arguments" {
+    for_each = local.use-artifact ? [1] : []
+    content {
+      items {
+        value = local.use-artifact ? var.artifact_id : "none"
+        name = "artifactId"
+      }
+      items {
+        value = local.use-artifact ? data.oci_artifacts_generic_artifact.app_artifact[0].version : "none"
+        name = "artifact_version"
+      }
+    }
+  }
   build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
   display_name = "triggered-by-terraform"
   count = (local.use-image ? 0 : 1)
@@ -249,7 +269,7 @@ resource "oci_devops_deploy_pipeline" "deploy_pipeline" {
   ]
   project_id   = local.project_id
   description  = "Deploy pipeline"
-  display_name = "${var.application_name}-deploy"
+  display_name = "${local.application_name}-deploy"
 }
 
  resource "oci_devops_deploy_stage" "deploy_stage" {
@@ -288,13 +308,13 @@ resource "oci_devops_deploy_pipeline" "deploy_pipeline" {
 # Create a projet to contain deploy pipeline when deploying for container image
 resource "oci_ons_notification_topic" "deploy_image_topic" {
   compartment_id = var.devops_compartment
-  name = "topic-${var.application_name}"
+  name = "topic-${local.application_name}"
   count = (local.use-image ? 1 : 0)
 }
 
 resource "oci_devops_project" "deploy_image_project" {
   compartment_id = var.devops_compartment
-  name = "deploy-${var.application_name}"
+  name = "deploy-${local.application_name}"
   notification_config {
     topic_id = oci_ons_notification_topic.deploy_image_topic[0].id
   }

@@ -13,7 +13,7 @@ resource "oci_container_instances_container_instance" "app_container_instance" {
   availability_domain = var.availability_domain
   compartment_id = var.compartment_id
   containers {
-    image_url = local.image-remote-tag
+    image_url = local.image-latest-tag
     display_name = "${local.instance-name}-${count.index}container"
     environment_variables = merge(local.env_variables, local.other_env_variables)
   }

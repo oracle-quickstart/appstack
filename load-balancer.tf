@@ -25,7 +25,7 @@ resource "oci_load_balancer_backend_set" "load_balancer_backend_set" {
     # oci_core_image.app_image,
     oci_load_balancer_certificate.backend_certificate
   ]
-  name             = "${local.load-balancer-name}_bset"
+  name             = "${var.application_name}_bset"
   load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
   policy           = "ROUND_ROBIN"
 
@@ -102,7 +102,7 @@ resource "oci_load_balancer_listener" "listener_https" {
   ]
   default_backend_set_name = oci_load_balancer_backend_set.load_balancer_backend_set.name
   load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
-  name = "${local.load-balancer-name}_https"
+  name = "${var.application_name}_https"
   port = 443
   protocol = "HTTP"
 
@@ -122,7 +122,7 @@ resource "oci_load_balancer_listener" "listener_http" {
   ]
   default_backend_set_name = oci_load_balancer_backend_set.load_balancer_backend_set.name
   load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
-  name = "${local.load-balancer-name}_http"
+  name = "${var.application_name}_http"
   port = 80
   protocol = "HTTP"
   count = (var.create_fqdn ? 0 : 1)

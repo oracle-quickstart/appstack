@@ -5,7 +5,7 @@
 
 resource "oci_apm_apm_domain" "app_apm_domain" {
   compartment_id = var.compartment_id
-  display_name = "${var.application_name}-apm-domain"
+  display_name = "${local.application_name}-apm-domain"
   is_free_tier = var.is_free_tier
 }
 
