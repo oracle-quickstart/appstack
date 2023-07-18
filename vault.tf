@@ -19,6 +19,15 @@ resource "oci_kms_key" "app_key" {
   count = var.use_existing_vault ? 0 : 1
 }
 
+
+# Create an authentication token for user to connect to repositories
+resource "oci_identity_auth_token" "auth_token" {
+#  provider = oci.home-provider
+  description = "Authentication token for ${local.application_name}"
+  user_id = var.current_user_ocid
+  count = (var.use_existing_token ? 0 : 1)
+}
+
 # Secret containing the authentication token
 resource "oci_vault_secret" "auth_token_secret" {
   depends_on = [ 
@@ -32,7 +41,7 @@ resource "oci_vault_secret" "auth_token_secret" {
       content_type = "BASE64"
 
       #Optional
-      content = base64encode(oci_identity_auth_token.auth_token.token)
+      content = base64encode(local.app_auth_token)
       name = "auth_token_content_${formatdate("MMDDhhmm", timestamp())}"
   }
   secret_name ="auth_token_secret_${formatdate("MMDDhhmm", timestamp())}"

@@ -68,8 +68,7 @@ resource "null_resource" "create_config_repo_war" {
     local_file.wallet,
     local_file.self_signed_certificate,
     local_file.oci_build_config,
-    random_password.wallet_password,
-    oci_identity_policy.user_manage_all_policy
+    random_password.wallet_password
   ]
 
   # clone new repository
@@ -217,8 +216,7 @@ resource "null_resource" "create_config_repo_jar" {
     local_file.wallet,
     local_file.self_signed_certificate,
     local_file.oci_build_config,
-    random_password.wallet_password,
-    oci_identity_policy.user_manage_all_policy
+    random_password.wallet_password
   ]
 
   # clone new repository
@@ -334,7 +332,7 @@ resource "oci_artifacts_repository" "application_repository" {
   compartment_id = var.compartment_id
   is_immutable = true
   repository_type = "GENERIC"
-  display_name = "${var.application_name}-repository"
+  display_name = "${local.application_name}-repository"
 }
 
 resource "oci_generic_artifacts_content_artifact_by_path" "update_container_instance_script" {
