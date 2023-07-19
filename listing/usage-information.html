@@ -1,86 +1,142 @@
 <p><strong>Configuration</strong></p>
 
-<p><strong>Application</strong>: The stack allows different types of deployments: <em>source code</em> deployment, <em>java artifact</em> deployment or <em>container image</em> deployment. <em>Source code</em> deployment is possible if the source code of the application is stored in OCI DevOps; <em>Java artifact</em> deployment requires a Java artifact to be present in the OCI Artifact Registry; and <em>Container image</em> deployment requires the container image to&nbsp;be present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.</p>
+<p><strong>Application</strong>: The stack allows different types of deployments: <em>source code</em> deployment,
+	<em>java artifact</em> deployment or <em>container image</em> deployment. <em>Source code</em> deployment is possible
+	if the source code of the application is stored in OCI DevOps; <em>Java artifact</em> deployment requires a Java
+	artifact to be present in the OCI Artifact Registry; and <em>Container image</em> deployment requires the container
+	image to&nbsp;be present in an OCI Container Registry accessible by the Stack, the image must be configured to respond
+	to HTTPS requests through the exposed port.
+</p>
 
 <ul>
-	<li><strong>Application Name</strong>: application identifier, used as a prefix to some of the resources created by the stack</li>
+	<li><strong>Application Name</strong>: application identifier, used as a prefix to some of the resources created by
+		the stack</li>
 	<li><strong>Number of deployments</strong>: the number of container instances that will be deployed</li>
 	<li><strong>Application source</strong>:&nbsp;source code, or&nbsp;artifact&nbsp;or&nbsp;container registry.</li>
 	<li>If <em>application source</em> is either&nbsp;<em>source code&nbsp;</em>or&nbsp;<em>artifact</em>:
-	<ul>
-		<li><strong>Artifact type</strong>:
 		<ul>
-			<li>JAR: The executable java archive will be run with the&nbsp;<em>JVM options&nbsp;</em>and&nbsp;<em>Program arguments&nbsp;</em>provided in the &quot;Other parameters&quot; section.</li>
-			<li>WAR: The Web Archive will be deployed in a Tomcat Server. This Tomcat Server will be started using the&nbsp;JVM Options&nbsp;provided in the &quot;Other Parameters&quot; section.</li>
+			<li><strong>Artifact type</strong>:
+				<ul>
+					<li>JAR: The executable java archive will be run with the&nbsp;<em>JVM options&nbsp;</em>and&nbsp;<em>Program
+							arguments&nbsp;</em>provided in the &quot;Other parameters&quot; section.</li>
+					<li>WAR: The Web Archive will be deployed in a Tomcat Server. This Tomcat Server will be started using
+						the&nbsp;JVM Options&nbsp;provided in the &quot;Other Parameters&quot; section.</li>
+				</ul>
+			</li>
 		</ul>
-		</li>
-	</ul>
 	</li>
 	<li>If <em>application source</em> is&nbsp;<em>source code</em>:&nbsp;
-	<ul>
-		<li><strong>DevOps repository name (OCID)</strong>: OCID of the repository containing the source code of the application.</li>
-		<li><strong>Branch used for build/deployment</strong>: name of the branch to build and deploy. The application will be&nbsp;built and deployed each time a change is made to this branch.</li>
-		<li><strong>Application build command</strong>: command will be used by the build pipeline to build the application.</li>
-		<li><strong>Artifact path</strong>: path to the generated application artifact (jar or war file) once the application is built.</li>
-	</ul>
+		<ul>
+			<li><strong>DevOps repository name (OCID)</strong>: OCID of the repository containing the source code of the
+				application.</li>
+			<li><strong>Branch used for build/deployment</strong>: name of the branch to build and deploy. The application
+				will be&nbsp;built and deployed each time a change is made to this branch.</li>
+			<li><strong>Application build command</strong>: command will be used by the build pipeline to build the
+				application.</li>
+			<li><strong>Artifact path</strong>: path to the generated application artifact (jar or war file) once the
+				application is built.</li>
+		</ul>
 	</li>
 	<li>If <em>application source</em> is&nbsp;<em>artifact</em>:
-	<ul>
-		<li><strong>Artifact repository OCID</strong>: OCID of the repository containing the artifact.</li>
-		<li><strong>Artifact OCID</strong>: OCID of the artifact to deploy.</li>
-	</ul>
+		<ul>
+			<li><strong>Artifact repository OCID</strong>: OCID of the repository containing the artifact.</li>
+			<li><strong>Artifact OCID</strong>: OCID of the artifact to deploy.</li>
+		</ul>
 	</li>
 	<li>If <em>application source</em> is&nbsp;<em>container image</em>:
-	<ul>
-		<li><strong>Full path to the image in container registry.</strong></li>
-		<li><strong>Exposed port</strong>: port exposed by the container image.</li>
-	</ul>
+		<ul>
+			<li><strong>Full path to the image in container registry.</strong></li>
+			<li><strong>Exposed port</strong>: port exposed by the container image.</li>
+		</ul>
 	</li>
 </ul>
 
-<p><strong>Database</strong>: The stack assumes that the persistence is handled by a database and this section lets you configure that database. You can either choose an existing database by selecting the database or create a new one.</p>
+<p><strong>Stack authentication</strong>: a Vault is used to store sensitive information such as authentication tokens
+	and passwords.&nbsp;The stack can either use an existing vault or create a new one.&nbsp;To use an existing key vault,
+	the stack will let you select the existing vault and key (AES). To create a new vault you must provide
+	the&nbsp;user-friendly name of the vault to create.</p>
+
+<p>An <strong>authentication token</strong> is used by the stack to authenticate the user when connecting to the code
+	repository or container registry. This token can either be provided or created by the stack.</p>
+
+<p><strong>Database</strong>: The stack assumes that the persistence is handled by a database and this section lets you
+	configure that database. You can either choose an existing database by selecting the database or create a new one.</p>
 
 <ul>
 	<li>Use existing database:
-	<ul>
-		<li><strong>Autonomous Database</strong>: select the database you want the application to access.</li>
-		<li><strong>DB username</strong>: database user used to access the database.</li>
-		<li><strong>DB user password</strong>: provide the user&#39;s password.</li>
-	</ul>
+		<ul>
+			<li><strong>Autonomous Database</strong>: select the database you want the application to access.</li>
+			<li><strong>DB username</strong>: database user used to access the database.</li>
+			<li><strong>DB user password</strong>: provide the user&#39;s password.</li>
+		</ul>
 	</li>
 	<li>Create new database:
-	<ul>
-		<li><strong>Autonomous Database display name</strong>: user-friendly display name of the autonomous database.</li>
-		<li><strong>Database ADMIN password</strong>: password of the ADMIN user of the database.</li>
-		<li><strong>Storage (TB)</strong>: The amount of storage in TB to allocate.</li>
-		<li><strong>OCPU count</strong>: The number of OCPU cores to enable. Available cores are subject to your tenancy&#39;s service limits.</li>
-	</ul>
+		<ul>
+			<li><strong>Autonomous Database display name</strong>: user-friendly display name of the autonomous database.</li>
+			<li><strong>Database ADMIN password</strong>: password of the ADMIN user of the database.</li>
+			<li><strong>Storage (TB)</strong>: The amount of storage in TB to allocate.</li>
+			<li><strong>OCPU count</strong>: The number of OCPU cores to enable. Available cores are subject to your
+				tenancy&#39;s service limits.</li>
+		</ul>
 	</li>
 </ul>
 
-<p>If the application consumes environment variables to configure the database access, the stack can set these environment variables so that the application will connect to the selected database. If the&nbsp;<em>application source&nbsp;</em>is either&nbsp;<em>source code&nbsp;</em>or&nbsp;<em>artifact</em>, the stack will configure the application to use mutual TLS when connecting to the database (using a wallet in which the username and password used to access the database are stored). Therefore the only configuration parameter needed to connect to the database is the connection URL that can be set through an environment variable whose name is configurable.&nbsp;If you are deploying the application using a <em>container image</em>, three environment variables will be available, these environment variables configure the database connection URL, username and password. A check box will allow you to choose if you want to use a given&nbsp;environment variable, if you check that checkbox you will be prompted for the environment variable&#39;s name.</p>
+<p>If the application consumes environment variables to configure the database access, the stack can set these
+	environment variables so that the application will connect to the selected database. If the&nbsp;<em>application
+		source&nbsp;</em>is either&nbsp;<em>source code&nbsp;</em>or&nbsp;<em>artifact</em>, the stack will configure the
+	application to use mutual TLS when connecting to the database (using a wallet in which the username and password used
+	to access the database are stored). Therefore the only configuration parameter needed to connect to the database is
+	the connection URL that can be set through an environment variable whose name is configurable.&nbsp;If you are
+	deploying the application using a <em>container image</em>, three environment variables will be available, these
+	environment variables configure the database connection URL, username and password. A check box will allow you to
+	choose if you want to use a given&nbsp;environment variable, if you check that checkbox you will be prompted for the
+	environment variable&#39;s name.</p>
 
-<p><strong>Other Parameters</strong>: Besides the above predefined environment variables, the stack allows you to provide other parameters to your application. This can be achieved by providing environment variables, JVM options and/or program arguments. The use of JVM option is possible when the&nbsp;<em>application source</em>&nbsp;is either <em>source code </em>or&nbsp;<em>artifact</em>,&nbsp;and the use of program arguments is only possible when the&nbsp;<em>artifact type</em>&nbsp;is&nbsp;<em>JAR</em>.</p>
+<p><strong>Other Parameters</strong>: Besides the above predefined environment variables, the stack allows you to
+	provide other parameters to your application. This can be achieved by providing environment variables, JVM options
+	and/or program arguments. The use of JVM option is possible when the&nbsp;<em>application source</em>&nbsp;is either
+	<em>source code </em>or&nbsp;<em>artifact</em>,&nbsp;and the use of program arguments is only possible when
+	the&nbsp;<em>artifact type</em>&nbsp;is&nbsp;<em>JAR</em>.
+</p>
 
 <ul>
-	<li><strong>Other environment variables</strong>: you can use this field to set environment variables consumed by your applicaiton. These environment variables should be provided as a semicolon separated list of &lt;name, value&gt; pairs in the following format: var1=value1;var2=value2 ... varN=valueN.</li>
-	<li><strong>JVM options</strong>: You can also provide JVM options that will be set when starting the java VM. If the artifact type of you application is a JAR, the JVM Options will be set when starting the JAR file and if the artifact type is a WAR, the JVM Options will be set when starting Tomcat.</li>
-	<li><strong>Program arguments</strong>: If your application consumes arguments, you can use this field to set them. Arguments should be provided as a space separated list and will be passed to the application at start-up : arg1&nbsp; arg2 ..., argN.</li>
+	<li><strong>Other environment variables</strong>: you can use this field to set environment variables consumed by your
+		applicaiton. These environment variables should be provided as a semicolon separated list of &lt;name, value&gt;
+		pairs in the following format: var1=value1;var2=value2 ... varN=valueN.</li>
+	<li><strong>JVM options</strong>: You can also provide JVM options that will be set when starting the java VM. If the
+		artifact type of you application is a JAR, the JVM Options will be set when starting the JAR file and if the
+		artifact type is a WAR, the JVM Options will be set when starting Tomcat.</li>
+	<li><strong>Program arguments</strong>: If your application consumes arguments, you can use this field to set them.
+		Arguments should be provided as a space separated list and will be passed to the application at start-up :
+		arg1&nbsp; arg2 ..., argN.</li>
 </ul>
 
-<p><strong>Application configuration - SSL communication between backends and load balancer</strong>: A certificate is needed to configure the load balancer and the backends so that the communication between them is done using SSL.&nbsp;</p>
+<p><strong>Application configuration - SSL communication between backends and load balancer</strong>: A certificate is
+	needed to configure the load balancer and the backends so that the communication between them is done using SSL.&nbsp;
+</p>
 
-<p>If the&nbsp;<em>application source&nbsp;</em>is either&nbsp;<em>source code&nbsp;</em>or&nbsp;<em>artifact</em>, the stack creates the self-signed certificate that will be used for the communication between the load balancer and the backends and stores&nbsp;it in a JKS keystore. If the&nbsp;<em>artifact type&nbsp;</em>is a <em>WAR </em>(web application deployed using Tomcat) Tomcat will be configured to use this keystore. If the&nbsp;<em>artifact type&nbsp;</em>is <em>JAR </em>the stack can use <strong>properties </strong>to configure SSL for the application.&nbsp;By default Spring boot properties will be used by the stack. A checkbox allows to change that configuration.</p>
+<p>If the&nbsp;<em>application source&nbsp;</em>is either&nbsp;<em>source code&nbsp;</em>or&nbsp;<em>artifact</em>, the
+	stack creates the self-signed certificate that will be used for the communication between the load balancer and the
+	backends and stores&nbsp;it in a JKS keystore. If the&nbsp;<em>artifact type&nbsp;</em>is a <em>WAR </em>(web
+	application deployed using Tomcat) Tomcat will be configured to use this keystore. If the&nbsp;<em>artifact
+		type&nbsp;</em>is <em>JAR </em>the stack can use <strong>properties </strong>to configure SSL for the
+	application.&nbsp;By default Spring boot properties will be used by the stack. A checkbox allows to change that
+	configuration.</p>
 
 <ul>
 	<li><strong>Server port number property name</strong>: name of the property to configure the server port.</li>
-	<li><strong>SSL keystore filename property name</strong>: name of the property to configure the SSL keystore filename.</li>
-	<li><strong>SSL key alias property name</strong>: name of the property to configure the SSL key alias property name.</li>
-	<li><strong>SSL keystore password property name</strong>: name of the property to configure the SSL keystore password property name.</li>
-	<li><strong>SSL keystore type property name</strong>: name of the property to configure the SSL keystore type property name.</li>
+	<li><strong>SSL keystore filename property name</strong>: name of the property to configure the SSL keystore filename.
+	</li>
+	<li><strong>SSL key alias property name</strong>: name of the property to configure the SSL key alias property name.
+	</li>
+	<li><strong>SSL keystore password property name</strong>: name of the property to configure the SSL keystore password
+		property name.</li>
+	<li><strong>SSL keystore type property name</strong>: name of the property to configure the SSL keystore type property
+		name.</li>
 </ul>
 
-<p>If the&nbsp;<em>application source</em>&nbsp;is&nbsp;<em>container image</em>, the image must&nbsp;already be configured to use SSL, the following information is necessary to configure the load balancer (PEM format):</p>
+<p>If the&nbsp;<em>application source</em>&nbsp;is&nbsp;<em>container image</em>, the image must&nbsp;already be
+	configured to use SSL, the following information is necessary to configure the load balancer (PEM format):</p>
 
 <ul>
 	<li><strong>SSL certificate</strong>: the public certificate.</li>
@@ -88,40 +144,56 @@
 	<li><strong>CA certificate</strong>: the CA certificate.</li>
 </ul>
 
-<p><strong>Vault</strong>: a Vault is used to store sensitive information such as authentication tokens and passwords. The stack can either use an existing vault (which can be in a different compartment) or create a new one.&nbsp;To use an existing key vault, the stack will let you select the existing vault and key (AES). To create a new vault you must provide the&nbsp;user-friendly name of the vault to create.</p>
-
-<p><strong>Application URL</strong>: if you have a DNS domain that&#39;s managed in OCI you can configure the stack to add a new record (hostname) for your application. A certificate will also be needed so that the application can be accessed using SSL.</p>
+<p><strong>Application URL</strong>: if you have a DNS domain that&#39;s managed in OCI you can configure the stack to
+	add a new record (hostname) for your application. A certificate will also be needed so that the application can be
+	accessed using SSL.</p>
 
 <ul>
 	<li><strong>DNS zone</strong>: homain name managed in OCI DNS.</li>
-	<li><strong>Host name</strong>: host name that will be created on the selected Zone and will resolve to the the load balancer&#39;s IP address.</li>
+	<li><strong>Host name</strong>: host name that will be created on the selected Zone and will resolve to the the load
+		balancer&#39;s IP address.</li>
 	<li><strong>Certificate OCID</strong>: certificate for the application URL</li>
 </ul>
 
-<p><strong>Network</strong>: The stack is designed to create all of its resources in the same VCN. You have the choice between using an existing VCN or creating a new one. If you chose to use an existing VNC you can either use existing subnets or create&nbsp;new ones.</p>
+<p><strong>Network</strong>: The stack is designed to create all of its resources in the same VCN. You have the choice
+	between using an existing VCN or creating a new one. If you chose to use an existing VNC you can either use existing
+	subnets or create&nbsp;new ones.</p>
 
 <ul>
-	<li>The <strong>application subnet</strong>&nbsp;is for the container instances running the application and the&nbsp;deployment pipeline. An Network Security Group (NSG) will be created and configured to allow the communication between the application and: the load balancer,&nbsp;the database and other OCI Services through a Service Gateway.</li>
-	<li>A <strong>database subnet</strong> is only needed if the Stack creates a new database. A NSG will be created and configured to allow the communication between the application and the database.&nbsp;</li>
-	<li>The <strong>load balancer subnet </strong>can either be private (accessible from inside OCI) or public (accessible from both OCI and the Internet). A NSG will be created and configured to allow the communication between the load balancer and the application. If you chose to <em>open the load balancer to the internet</em>, the load balancer subnet will be a public subnet and an Internet Gateway will be created.</li>
+	<li>The <strong>application subnet</strong>&nbsp;is for the container instances running the application and
+		the&nbsp;deployment pipeline. An Network Security Group (NSG) will be created and configured to allow the
+		communication between the application and: the load balancer,&nbsp;the database and other OCI Services through a
+		Service Gateway.</li>
+	<li>A <strong>database subnet</strong> is only needed if the Stack creates a new database. A NSG will be created and
+		configured to allow the communication between the application and the database.&nbsp;</li>
+	<li>The <strong>load balancer subnet </strong>can either be private (accessible from inside OCI) or public (accessible
+		from both OCI and the Internet). A NSG will be created and configured to allow the communication between the load
+		balancer and the application. If you chose to <em>open the load balancer to the internet</em>, the load balancer
+		subnet will be a public subnet and an Internet Gateway will be created.</li>
 </ul>
 
-<p>By default the <em>load balancer</em> is configured with minimum and maximum bandwidth of 10Mbps, the health check URL is set to &quot;/&quot; and the status code 200. These values can be changed if needed.</p>
+<p>By default the <em>load balancer</em> is configured with minimum and maximum bandwidth of 10Mbps, the health check
+	URL is set to &quot;/&quot; and the status code 200. These values can be changed if needed.</p>
 
-<p><strong>Container instance configuration</strong>: finally you can chose the shape and size of the container instances that will run your application.</p>
+<p><strong>Container instance configuration</strong>: finally you can chose the shape and size of the container
+	instances that will run your application.</p>
 
 <p><strong>Once the stack is configured it will</strong>:</p>
 
 <ul>
 	<li>Create a new repository called &quot;&lt;application-name&gt;_config&quot; that includes:
-	<ul>
-		<li><em>wallet.zip</em>: the database wallet (if the database wallet is rotated this zip file needs to be updated)</li>
-		<li><em>Dockerfile</em>: used to build the container image</li>
-		<li><em>build_spec.yaml</em>: build spec for the build pipeline</li>
-		<li><em>self.keystore</em>: self-signed keystore for the internal https connection between the load balancer and the container instances</li>
-	</ul>
+		<ul>
+			<li><em>wallet.zip</em>: the database wallet (if the database wallet is rotated this zip file needs to be updated)
+			</li>
+			<li><em>Dockerfile</em>: used to build the container image</li>
+			<li><em>build_spec.yaml</em>: build spec for the build pipeline</li>
+			<li><em>self.keystore</em>: self-signed keystore for the internal https connection between the load balancer and
+				the container instances</li>
+		</ul>
 	</li>
 	<li>Generate a container image of the application, and add it to the&nbsp;Container Registry</li>
 	<li>Deploy the application as a container in&nbsp;Container Instances</li>
 	<li>Leverage OCI services such as VCN, Load Balancer, APM</li>
 </ul>
+
+<p>&nbsp;</p>
