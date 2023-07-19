@@ -25,6 +25,7 @@ The stack supports different kinds of deployments: *source code* deployment, jav
        - WAR: If your application is packaged as a Web Archive. The WAR will be deployed in a Tomcat Server. This Tomcat Server will be started using the JVM Options provided in the "Other Parameters" section.
 
   - If the *application source* is *source code*: 
+       - **DevOps compartment:** select the compartment containing the code repository
        - **DevOps repository name (OCID):** OCID of the repository containing the *source code* of the application
        - **Branch used for build/deployment:** name of the branch to build a deploy. A build trigger will be added so that the application is built and deployed each time a change is made to this branch.
        - **Application build command:** command used to build the application. This command will be used by the build pipeline to build the application.
@@ -35,6 +36,27 @@ The stack supports different kinds of deployments: *source code* deployment, jav
   - If the *application source* is a *container image*:
        - **Full path to the image in the container registry**
        - **Exposed port:** port exposed by the container image
+
+## Stack authentication
+
+![](./screenshots/7_Vault.png)
+
+An **authentication token** is used by the stack to authenticate the user when connecting to the code repository or container registry. This token can either be provided or created by the stack. **Note** that there is a limit on the maximum number of authentication tokens a user can have and that once the token is generated it will not be displayed again.
+
+To use an existing token:
+  - **User's authentication token:** provide the user's authentication token
+
+A **Vault** is used to store sensitive information such as authentication tokens and passwords. The stack can either use an existing vault (which can be in a different compartment) or create a new one.
+
+To use an existing key vault :
+
+ - **Compartment:** select the compartment containing the vault
+ - **Vault:** select the vault you would like to use
+ - **Encryption key:** select a AES encryption key to use
+
+To create a new vault:
+
+ - **Key vault display name:** user-friendly name of the vault to create. The vault will be created in the same compartment as the rest of the resources created by the stack.
 
 ## Application Performance Monitoring (APM)
 
@@ -107,29 +129,13 @@ If the *application source* is a *container image*, the image must be configured
  - **Private key:** The certificate's private key (PEM format)
  - **CA certificate:** The CA certificate (PEM format, same as the certificate for self-signed certificates)
 
-
-## Vault
-
-![](./screenshots/7_Vault.png)
-
-A Vault is used to store sensitive information such as authentication tokens and passwords. The stack can either use an existing vault (which can be in a different compartment) or create a new one.
-
-To use an existing key vault :
-
- - **Compartment:** select the compartment containing the vault
- - **Vault:** select the vault you would like to use
- - **Encryption key:** select a AES encryption key to use
-
-To create a new vault:
-
- - **Key vault display name:** user-friendly name of the vault to create. The vault will be created in the same compartment as the rest of the resources created by the stack.
-
 ## Application URL
 
 ![](./screenshots/8_ApplicationURL.png)
 
 This is optional but if you have a DNS domain that's managed in OCI you can configure the stack to add a new record (hostname) for your application. A certificate will also be needed so that the application can be accessed through HTTPS.
 
+ - **DNS and Certificate compartement:** select the compartment containing the DNS Zone and the Certificate
  - **DNS zone:** Domain name in which the hostname will be created.
  - **Hostname:** The hostname will be created on the selected Zone and will resolve to the load balancer's IP address.
  - **Certificate OCID:** certificate for the application URL
