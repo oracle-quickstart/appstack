@@ -6,7 +6,7 @@
 # create container registry in case the application is not an image (so
 # either source code or artifact)
 resource "oci_artifacts_container_repository" "application-container-repository" {
-  compartment_id = var.devops_compartment
+  compartment_id = local.use-artifact ? var.devops_compartment : var.compartment_id
   display_name = local.repository-name
 
   is_immutable = false
