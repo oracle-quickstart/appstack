@@ -95,7 +95,7 @@ variable "devops_compartment" {
 variable "db_compartment" {
   type = string
   default = ""
-  description = "Compartment containing the DevOps project"
+  description = "Compartment containing the autonomous database"
 }
 
 # OCI devops repository
