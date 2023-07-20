@@ -25,15 +25,16 @@ The stack supports different kinds of deployments: *source code* deployment, jav
        - WAR: If your application is packaged as a Web Archive. The WAR will be deployed in a Tomcat Server. This Tomcat Server will be started using the JVM Options provided in the "Other Parameters" section.
 
   - If the *application source* is *source code*: 
-       - **DevOps compartment:** select the compartment containing the code repository
-       - **DevOps repository name (OCID):** OCID of the repository containing the *source code* of the application
+       - **DevOps repository (OCID):** OCID of the repository containing the *source code* of the application
        - **Branch used for build/deployment:** name of the branch to build a deploy. A build trigger will be added so that the application is built and deployed each time a change is made to this branch.
        - **Application build command:** command used to build the application. This command will be used by the build pipeline to build the application.
        - **Artifact path:** The path to the generated application *artifact* (jar or war file) after the build command has run.
   - If the *application source* is an *artifact*:
+       - **DevOps compartment:** select the compartment where the DevOps project will be created
        - **Artifact repository OCID:** OCID of the repository containing the artifact
        - **Artifact OCID:** OCID of the *artifact* to deploy
   - If the *application source* is a *container image*:
+       - **DevOps compartment:** select the compartment where the DevOps project will be created
        - **Full path to the image in the container registry**
        - **Exposed port:** port exposed by the container image
 
@@ -72,6 +73,7 @@ Your application will automatically be monitored through APM using the Java Agen
 The stack assumes that the persistence is handled by a database and this section lets you configure that database. You can either choose an existing database or create a new one. If you create a new one it will be configured by the stack so that the application can connect to it using network security groups and a private endpoint. If you choose an existing database, you need to configure the network access for the application. For example, if an Autonomous Database Serverless is chosen, access from the application may require either a private endpoint or an ACL rule. 
 
  - Use existing database:
+   - **Autonomous Database compartment:** compartment containing the autonomous database
    - **Autonomous Database:** this drop-down field lists all autonomous databases in the selected compartment. Select the database you want the application to access.
    - **DB Username:** provide the username that the application should use to access the database
    - **DB user password:** provide the user's password
