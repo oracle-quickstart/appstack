@@ -72,6 +72,7 @@ variableGroups:
       - data_storage_size_in_tbs
       - cpu_core_count
       - ocpu_count
+      - db_compartment
       - autonomous_database
       - autonomous_database_user
       - autonomous_database_password
@@ -193,6 +194,11 @@ variables:
     title: DevOps compartment
     description: Compartment containing the DevOps project
     default: ${compartment_id}
+    visible: 
+      not:
+        - eq:
+          - application_source
+          - "SOURCE_CODE"    
   repo_name:
     type: string
     required: true
@@ -322,13 +328,22 @@ variables:
     visible: 
       not:
         - use_existing_database
+  db_compartment:
+    type: oci:identity:compartment:id
+    required: true
+    title: Autonomous Database compartment
+    description: The compartment conataining the Autonomous Database.
+    default: ${compartment_id}
+    visible: 
+      and: 
+        - use_existing_database    
   autonomous_database:
     type: oci:database:autonomousdatabase:id
     required: true
     title: Autonomous Database
     description: The Autonomous Database used by the application.
     dependsOn:
-      compartmentId: ${compartment_id}
+      compartmentId: ${db_compartment}
     visible: 
       and: 
         - use_existing_database
