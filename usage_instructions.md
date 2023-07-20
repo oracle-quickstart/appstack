@@ -25,7 +25,7 @@ The stack supports different kinds of deployments: *source code* deployment, jav
        - WAR: If your application is packaged as a Web Archive. The WAR will be deployed in a Tomcat Server. This Tomcat Server will be started using the JVM Options provided in the "Other Parameters" section.
 
   - If the *application source* is *source code*: 
-       - **DevOps repository name (OCID):** OCID of the repository containing the *source code* of the application
+       - **DevOps repository (OCID):** OCID of the repository containing the *source code* of the application
        - **Branch used for build/deployment:** name of the branch to build a deploy. A build trigger will be added so that the application is built and deployed each time a change is made to this branch.
        - **Application build command:** command used to build the application. This command will be used by the build pipeline to build the application.
        - **Artifact path:** The path to the generated application *artifact* (jar or war file) after the build command has run.
