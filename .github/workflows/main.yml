@@ -1,0 +1,26 @@
+name: 'Build App Stack for Java'
+on:
+  workflow_dispatch:
+    inputs:
+      branch: 
+        description: Branch name
+        required: true
+        default: 'main'
+        type: string
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${branch}
+      - name: create-artifact
+        run: |
+          cat xxx xxx xxx > interface.yaml
+          zip -r ./appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
+      - name: upload-artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: appstackforjava
+          path: ./appstackforjava.zip
