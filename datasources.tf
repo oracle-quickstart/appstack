@@ -50,7 +50,7 @@ data "template_file" "dockerfile" {
     endpoint = oci_apm_apm_domain.app_apm_domain.data_upload_endpoint 
     port_property = var.port_property
     vm_options = (var.vm_options != null && var.vm_options != "" ? format("\"%s\", ", replace(var.vm_options, " " , "\", \"")) : "")
-    program_arguments = (var.program_arguments != null && var.program_arguments != "" ? format(", \"%s\" ", replace(trimspace(var.program_arguments, " ", ","))): "")
+    program_arguments = (var.program_arguments != null && var.program_arguments != "" ? format(", \"%s\" ", replace(trimspace(var.program_arguments), " ", "\", \"")): "")
     keystore_property = var.keystore_property
     key_alias_property = var.key_alias_property
     keystore_password_property = var.keystore_password_property
