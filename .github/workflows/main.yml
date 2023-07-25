@@ -14,11 +14,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
         with:
-          ref: ${branch}
+          ref: ${{ github.event.inputs.branch }}
       - name: create-artifact
         run: |
           cat xxx xxx xxx > interface.yaml
-          zip -r ./appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
+          zip -r ./appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
       - name: upload-artifact
         uses: actions/upload-artifact@v3
         with:
