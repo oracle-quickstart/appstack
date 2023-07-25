@@ -17,7 +17,15 @@ jobs:
           ref: ${{ github.event.inputs.branch }}
       - name: create-artifact
         run: |
-          cat interface.yaml > interface.yaml
+          mv java/* .
+          APPLICATION_GROUP=$(cat interface-application-group-block.yaml)
+          SSL_GROUP=$(cat interface-ssl-group-block.yaml)
+          APPLICATION=$(cat interface-application-block.yaml)
+          SSL=$(cat interface-ssl-block.yaml)
+          sed 's/# [APPLICATION_GROUP_BLOCK]/${APPLICATION_GROUP}/g' interface.yaml > interface.yaml
+          sed 's/# [SSL_GROUP_BLOCK]/${SSL_GROUP}/g' interface.yaml > interface.yaml
+          sed 's/# [APPLICATION_BLOCK]/${APPLICATION}/g' interface.yaml > interface.yaml
+          sed 's/# [SSL_BLOCK]/${SSL}/g' interface.yaml > interface.yaml
           zip -r ./appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
           ls -lai
       - name: upload-artifact

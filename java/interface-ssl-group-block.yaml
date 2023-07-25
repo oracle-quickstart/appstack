@@ -1,0 +1,11 @@
+  - title: "Application configuration - SSL communication between backends and load balancer"
+    variables:
+      - use_default_ssl_configuration
+      - port_property
+      - keystore_property
+      - key_alias_property
+      - keystore_password_property
+      - keystore_type_property
+      - cert_pem
+      - private_key_pem
+      - ca_pem

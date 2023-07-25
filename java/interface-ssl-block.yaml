@@ -1,0 +1,86 @@
+  use_default_ssl_configuration:
+    type: boolean
+    title: Use default SSL properties for Spring 
+    description: The stack creates a self-signed certificate that will be used for the communication between the load balancer and the backends. This self-signed certificate is stored in a JKS keystore. The following properties can be used to configure the web server to use this JKS keystore. By default Spring boot properties will be used by the stack. Click on this checkbox to specify your own property names.
+    default: true
+    visible:
+      and:
+        - eq:
+          - application_type
+          - "JAR"
+        - not: 
+          - eq:
+            - application_source
+            - "IMAGE"
+  port_property:
+    type: string
+    title: Server port number property name
+    default: "server.port"
+    required: true
+    description:  Assuming that your application can consume a property to configure the server port, this field can be used to specify the name of the property.
+    visible: 
+      not:
+        - use_default_ssl_configuration
+  keystore_property:
+    type: string
+    title: SSL keystore filename property name
+    default: "server.ssl.key-store"
+    required: true
+    description:  Assuming that your application can consume a property to configure the SSL keystore filename, this field can be used to specify the name of the property.
+    visible: 
+      not: 
+        - use_default_ssl_configuration
+  key_alias_property:
+    type: string
+    title: SSL key alias property name
+    default: "server.ssl.key-alias"
+    required: true
+    description:  Assuming that your application can consume a property to configure the SSL key alias property name, this field can be used to specify the name of the property.
+    visible: 
+      not:
+        - use_default_ssl_configuration
+  keystore_password_property:
+    type: string
+    title: SSL keystore password property name
+    default: "server.ssl.key-store-password"
+    required: true
+    description:  Assuming that your application can consume a property to configure the SSL keystore password property name, this field can be used to specify the name of the property.
+    visible: 
+      not:
+        - use_default_ssl_configuration
+  keystore_type_property:
+    type: string
+    title: SSL keystore type property name
+    default: "server.ssl.key-store-type"
+    required: true
+    description:  Assuming that your application can consume a property to configure the SSL keystore type property name, this field can be used to specify the name of the property.
+    visible: 
+      not: 
+        - use_default_ssl_configuration
+  cert_pem:
+    type: text
+    multiline: true
+    title: SSL certificate
+    required: true
+    visible:
+      eq:
+        - application_source
+        - "IMAGE"
+  private_key_pem:
+    type: text
+    multiline: true
+    title: Private key
+    required: true
+    visible:
+      eq:
+        - application_source
+        - "IMAGE"
+  ca_pem:
+    type: text
+    multiline: true
+    title: CA certificate
+    required: true
+    visible:
+      eq:
+        - application_source
+        - "IMAGE"

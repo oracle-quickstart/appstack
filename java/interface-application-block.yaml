@@ -1,0 +1,114 @@
+  application_source:
+    type: enum
+    title: "Application source"
+    default: "SOURCE_CODE"
+    description: You can deploy an application that is either a container image, a Java artifact (JAR/WAR) or from the source code.
+    required: true
+    enum:
+      - IMAGE
+      - ARTIFACT
+      - SOURCE_CODE
+  application_type:
+    type: enum
+    title: "Artifact type"
+    description: The stack can deploy either an executable JAR (using Java runtime) or a WAR (through Tomcat). 
+    default: "JAR"
+    required: true
+    enum:
+      - not selected
+      - JAR
+      - WAR
+    visible:
+      not:
+        - eq:
+          - application_source
+          - "IMAGE"
+  devops_compartment:
+    type: oci:identity:compartment:id
+    required: true
+    title: DevOps compartment
+    description: Compartment containing the DevOps project
+    default: ${compartment_id}
+    visible: 
+      not:
+        - eq:
+          - application_source
+          - "SOURCE_CODE"    
+  repo_name:
+    type: string
+    required: true
+    title: DevOps repository (OCID)
+    description: OCID of the repository containing the application source code.
+    visible: 
+      eq: 
+        - application_source
+        - "SOURCE_CODE"
+  branch:
+    type: string
+    required: true
+    title: Branch used for build / deployment
+    description: Name of the branch to be built, deployed and on which a trigger will be installed for continuous deployment.
+    default: main
+    visible: 
+      eq: 
+        - application_source
+        - "SOURCE_CODE"
+  build_command:
+    type: string
+    required: true
+    title: Application build command
+    description: 'For example: mvn install'
+    default: mvn install
+    visible: 
+      eq: 
+        - application_source
+        - "SOURCE_CODE"
+  artifact_location:
+    type: string
+    required: true
+    title: Artifact path
+    description: 'For example: target/MyApplication.jar'
+    visible: 
+      eq: 
+        - application_source
+        - "SOURCE_CODE"
+  artifact_id:
+    type: string
+    required: true
+    title: Artifact OCID
+    visible: 
+      eq: 
+        - application_source
+        - "ARTIFACT"
+  registry_id:
+    type: string
+    required: true
+    title: Artifact repository OCID
+    visible: 
+      eq: 
+        - application_source
+        - "ARTIFACT"
+  image_path:
+    type: string
+    required: true
+    title: Full path to the image in container registry
+    visible: 
+      eq: 
+        - application_source
+        - "IMAGE"
+  exposed_port:
+    type: string
+    required: true
+    title: Exposed port
+    description: This is the backend port on which the application is listening.
+    default: 8443
+    visible: 
+      eq: 
+        - application_source
+        - "IMAGE"
+  is_free_tier:
+    type: boolean
+    required: true
+    title: Create as Always Free Domain
+    description: Up to 1000 spans per hour, 31 day storage for trace data and 10 monitor runs per hour.
+    default: false
