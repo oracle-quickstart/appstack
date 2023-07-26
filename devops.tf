@@ -105,8 +105,7 @@ resource "oci_devops_build_pipeline_stage" "repo_build_pipeline_stage" {
     oci_devops_repository.config_repo,
     oci_devops_build_pipeline.build_pipeline,
     oci_devops_build_pipeline.build_pipeline_artifact,
-    null_resource.create_config_repo_jar,
-    null_resource.create_config_repo_war
+    null_resource.commit_config_repo
   ]
   build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
   build_pipeline_stage_predecessor_collection {
@@ -149,8 +148,7 @@ resource "oci_devops_build_pipeline_stage" "art_build_pipeline_stage" {
     oci_devops_repository.config_repo,
     oci_devops_build_pipeline.build_pipeline,
     oci_devops_build_pipeline.build_pipeline_artifact,
-    null_resource.create_config_repo_jar,
-    null_resource.create_config_repo_war
+    null_resource.commit_config_repo
   ]
   build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
   build_pipeline_stage_predecessor_collection {
@@ -230,8 +228,7 @@ resource "oci_devops_build_run" "create_docker_image" {
     oci_devops_build_pipeline.build_pipeline_artifact,
     oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
     oci_devops_build_pipeline_stage.art_build_pipeline_stage,
-    null_resource.create_config_repo_jar,
-    null_resource.create_config_repo_war
+    null_resource.commit_config_repo
   ]
   dynamic "build_run_arguments" {
     for_each = local.use-artifact ? [1] : []

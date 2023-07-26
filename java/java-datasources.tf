@@ -59,7 +59,7 @@ data "template_file" "oci_build_config" {
     registryId = (local.use-artifact ? var.registry_id : "")
     fileName = (var.application_type == "WAR" ? "app.war" : "app.jar")
     db_username = local.username
-    db_connection_url = local.connection_str
+    db_connection_url = local.escaped_connection_url
     db_user_password = oci_vault_secret.db_user_password.id
     wallet_password = oci_vault_secret.db_wallet_password.id
   }
