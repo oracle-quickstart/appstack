@@ -4,5 +4,5 @@ jobs:
   call-workflow-passing-data:
     uses: oracle-quickstart/appstack/.github/workflows/test.yml@main
     with:
-      branch: ${GITHUB_REF##*/}
+      branch: ${{github.ref}}
       type: 'java'
