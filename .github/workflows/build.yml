@@ -19,10 +19,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ inputs.branch }}
       - name: create-artifact
         run: |
-          mv ${{ github.event.inputs.type }}/* .
+          mv ${{ inputs.type }}/* .
           sed -i -e "/###HEADER###/r interface-header.yaml" -e "//d" interface.yaml
           rm interface-header.yaml
           sed -i -e "/###APPLICATION_GROUP###/r interface-application-group.yaml" -e "//d" interface.yaml
@@ -33,10 +33,10 @@ jobs:
           rm interface-application.yaml
           sed -i -e "/###APP_CONFIG###/r interface-app-config.yaml" -e "//d" interface.yaml
           rm interface-app-config.yaml
-          zip -r ./appstackfor${{ github.event.inputs.type }}.zip . -x "*.git*" -x "java/*" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
+          zip -r ./appstackfor${{ inputs.type }}.zip . -x "*.git*" -x "java/*" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
           ls -lai
       - name: upload-artifact
         uses: actions/upload-artifact@v3
         with:
-          name: appstackfor${{ github.event.inputs.type }}
-          path: ./appstackfor${{ github.event.inputs.type }}.zip
+          name: appstackfor${{ inputs.type }}
+          path: ./appstackfor${{ inputs.type }}.zip
