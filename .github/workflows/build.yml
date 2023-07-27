@@ -22,6 +22,7 @@ jobs:
           ref: ${{ inputs.branch }}
       - name: create-artifact
         run: |
+          ls -lai
           mv ${{ inputs.type }}/* .
           sed -i -e "/###HEADER###/r interface-header.yaml" -e "//d" interface.yaml
           rm interface-header.yaml
