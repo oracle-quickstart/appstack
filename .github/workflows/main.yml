@@ -1,4 +1,4 @@
-name: 'Build App Stack for Java'
+name: 'Manually build app stack'
 on:
   workflow_dispatch:
     inputs:
@@ -7,21 +7,17 @@ on:
         required: true
         default: 'main'
         type: string
+      type: 
+        description: Stack type
+        required: true
+        default: 'main'
+        type: choice
+        options:
+          - java
+          - dotnet
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
-      - name: create-artifact
-        run: |
-          cat interface.yaml > interface.yaml
-          zip -r ./appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
-          ls -lai
-      - name: upload-artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: appstackforjava
-          path: ./appstackforjava.zip
+  call-workflow-passing-data:
+    uses: oracle-quickstart/appstack/.github/workflows/build.yml@main
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      type: ${{ github.event.inputs.type }}
