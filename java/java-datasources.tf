@@ -1,3 +1,6 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
 # dockerfile used to create image
 data "template_file" "dockerfile" {
   template = "${var.application_type == "JAR" ? file("${path.module}/Dockerfile-jar.template") : file("${path.module}/Dockerfile-war.template")}"

@@ -156,12 +156,6 @@ variable "application_source" {
   description = "source of the application: IMAGE, JAR/WAR, source code"
 }
 
-variable "application_type" {
-  type = string
-  default = "not selected"
-  description = "application type : JAR, WAR"
-}
-
 variable "create_fqdn" {
   type = bool
   description = "create a FQDN that points to the load balancer"
@@ -493,13 +487,6 @@ locals {
   )
   # FQDN
   domain_name = "${var.subdomain}.${var.zone}"
-  # Connection URL environment variable -> moved to language specific as it depends on driver
-  # Database username environment variable
-  username_env = "ENV ${var.username_env}=${local.username}" 
-  # Database password environment variable
-  password_env = "ENV ${var.password_env}=${local.password}" 
-  # TNS admin environment variable
-  tns_admin_env = "ENV ${var.tns_admin_env}=/opt/app/wallet" 
   # use repository (source code in devops)
   use-repository = (var.application_source == "SOURCE_CODE")
   # use artifact (jar or war)
@@ -514,7 +501,7 @@ locals {
     (env == "CONN_URL" ? {name : "${var.connection_url_env}", value : local.driver_connection_url} :
     (env == "USERNAME" ? {name : "${var.username_env}", value : local.username} :
     (env == "PASSWORD" ? {name : "${var.password_env}", value : local.password} :
-    (env == "WALLET" ? {name : "${var.tns_admin_env}", value : "/opt/app/wallet"} : null))))
+    (env == "WALLET" ? {name : "${var.tns_admin_env}", value : local.wallet_path} : null))))
      if ((env == "CONN_URL" && var.use_connection_url_env) || 
          (env == "USERNAME" && var.use_username_env) ||
          (env == "PASSWORD" && var.use_password_env) ||
