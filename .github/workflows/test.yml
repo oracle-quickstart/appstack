@@ -1,0 +1,22 @@
+name: 'Test trigger'
+on:
+  workflow_call:
+    inputs:
+      branch: 
+        description: Branch name
+        required: true
+        default: 'main'
+        type: string
+      type: 
+        description: Stack type
+        required: true
+        default: 'java'
+        type: string
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print parameters
+        run: |
+          echo ${{ github.event.inputs.type }}
+          echo ${{ github.event.inputs.branch }}
