@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 # creates load balancer and back ends
-resource "oci_load_balancer" "flexible_loadbalancer" {
+resource "oci_load_balancer_load_balancer" "flexible_loadbalancer" {
   shape          = "flexible"
   compartment_id = var.compartment_id
 
@@ -16,6 +16,13 @@ resource "oci_load_balancer" "flexible_loadbalancer" {
     minimum_bandwidth_in_mbps = var.minimum_bandwidth_in_mbps
   }
 
+  dynamic "reserved_ips" {
+    for_each = var.use_reserved_ip_address ? [1] : []
+    content {
+      id = data.oci_core_public_ip.reserved_ip[0].id
+    }
+  }
+
   is_private = var.open_https_port ? false : true
   display_name = local.load-balancer-name
 }
@@ -26,7 +33,7 @@ resource "oci_load_balancer_backend_set" "load_balancer_backend_set" {
     oci_load_balancer_certificate.backend_certificate
   ]
   name             = "${var.application_name}_bset"
-  load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
+  load_balancer_id = oci_load_balancer_load_balancer.flexible_loadbalancer.id
   policy           = "ROUND_ROBIN"
 
   health_checker {
@@ -65,7 +72,7 @@ resource "oci_load_balancer_backend_set" "load_balancer_backend_set" {
 resource "oci_load_balancer_certificate" "backend_certificate" {
     #Required
     certificate_name =  "backend-certificate"
-    load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
+    load_balancer_id = oci_load_balancer_load_balancer.flexible_loadbalancer.id
     ca_certificate = (local.use-image 
       ? var.ca_pem
       : tls_self_signed_cert.self_signed_certificate[0].cert_pem)
@@ -85,7 +92,7 @@ resource "oci_load_balancer_backend" "load_balancer_backend" {
   depends_on = [
     oci_load_balancer_backend_set.load_balancer_backend_set
   ]
-  load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
+  load_balancer_id = oci_load_balancer_load_balancer.flexible_loadbalancer.id
   backendset_name  = oci_load_balancer_backend_set.load_balancer_backend_set.name
   ip_address       = oci_container_instances_container_instance.app_container_instance[count.index].vnics[0].private_ip
   port             = var.exposed_port
@@ -101,7 +108,7 @@ resource "oci_load_balancer_listener" "listener_https" {
     oci_load_balancer_backend_set.load_balancer_backend_set
   ]
   default_backend_set_name = oci_load_balancer_backend_set.load_balancer_backend_set.name
-  load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
+  load_balancer_id = oci_load_balancer_load_balancer.flexible_loadbalancer.id
   name = "${var.application_name}_https"
   port = 443
   protocol = "HTTP"
@@ -121,7 +128,7 @@ resource "oci_load_balancer_listener" "listener_http" {
     oci_load_balancer_backend_set.load_balancer_backend_set
   ]
   default_backend_set_name = oci_load_balancer_backend_set.load_balancer_backend_set.name
-  load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
+  load_balancer_id = oci_load_balancer_load_balancer.flexible_loadbalancer.id
   name = "${var.application_name}_http"
   port = 80
   protocol = "HTTP"
@@ -137,7 +144,7 @@ resource "oci_dns_rrset" "subdomain_rrset" {
 
   items {
     domain = local.domain_name
-    rdata = oci_load_balancer.flexible_loadbalancer.ip_address_details[0].ip_address
+    rdata = oci_load_balancer_load_balancer.flexible_loadbalancer.ip_address_details[0].ip_address
     rtype = "A"
     ttl = 30
   }

@@ -123,6 +123,8 @@ variableGroups:
       - existing_lb_subnet_id
       - lb_subnet_cidr
       - open_https_port
+      - use_reserved_ip_address
+      - reserved_ip_address
       - use_default_lb_configuration
       - maximum_bandwidth_in_mbps
       - minimum_bandwidth_in_mbps
@@ -757,6 +759,20 @@ variables:
       subnet public and to open the HTTPS port of the load balancer to the 
       Internet.
     default: false
+  use_reserved_ip_address:
+    type: boolean
+    required: true
+    title: Use a reserved IP address
+    visible: open_https_port
+  reserved_ip_address:
+    type: string
+    required: true
+    title: Reserved IP address
+    description: Pre-created public IP that will be used as the IP of this load balancer. This reserved IP will not be deleted when load balancer is deleted. This ip should not be already mapped to any other resource.
+    visible:
+      and:
+        - open_https_port
+        - use_reserved_ip_address
   # Container instances configuration
   shape:
     type: enum

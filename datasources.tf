@@ -143,14 +143,14 @@ data "template_file" "oci_deploy_config" {
 
 data "template_file" "deploy_script" {
   depends_on = [
-    oci_load_balancer.flexible_loadbalancer,
+    oci_load_balancer_load_balancer.flexible_loadbalancer,
     oci_container_instances_container_instance.app_container_instance
   ]
   template = "${file("${path.module}/deploy.sh.template")}"
   vars = {
     "backend_name" = "${oci_container_instances_container_instance.app_container_instance[count.index].vnics[0].private_ip}:${var.exposed_port}"
     "backend_set_name" = "${var.application_name}_bset"
-    "load_balancer_id" = oci_load_balancer.flexible_loadbalancer.id
+    "load_balancer_id" = oci_load_balancer_load_balancer.flexible_loadbalancer.id
     "container_instance_id" = oci_container_instances_container_instance.app_container_instance[count.index].id
   }
   count = var.nb_copies
@@ -216,4 +216,9 @@ data "oci_core_subnet" "db_subnet" {
 
 data "oci_core_subnet" "lb_subnet" {
   subnet_id = local.lb_subnet_id
+}
+
+data "oci_core_public_ip" "reserved_ip" {
+    ip_address = var.reserved_ip_address == "" ? "127.0.0.1" : var.reserved_ip_address
+    count = var.use_reserved_ip_address ? 1 : 0
 }

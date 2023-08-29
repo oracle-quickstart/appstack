@@ -457,6 +457,16 @@ variable "current_user_token" {
   sensitive = true
 }
 
+variable "use_reserved_ip_address" {
+  type = bool
+  default = false
+}
+
+variable "reserved_ip_address" {
+  type = string
+  default = ""
+}
+
 locals {
   # application name with branch
   application_name = (var.branch == "" ? var.application_name : "${var.application_name}-${var.branch}")

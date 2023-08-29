@@ -183,6 +183,8 @@ The load balancer subnet can either be a private or a public subnet. Resources i
  - Use existing load balancer subnet
    - **Select the load balancer subnet:** The Load Balancer will be created using this subnet. This list will contain both public and private subnets. Note that if a private subnet is chosen, the Load Balancer will not have a public IP address and will therefore not be directly accessible from the Internet.
  - **Open load balancer's HTTPS port:** By checking this checkbox you agree to make the load balancer subnet public and to open the HTTPS port of the load balancer to the Internet.
+   - **Use a reserved IP address:** check this checkbox to use an existing reserved public IP address.
+      - **Reserved IP address:** the reserved IP address to use 
 
 By default the load balancer is configured with a minimum and maximum bandwidth of 10Mbps, the health check URL is set to "/" and the status code 200. These values can be changed if needed.
 
