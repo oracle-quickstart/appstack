@@ -120,19 +120,7 @@ resource "oci_load_balancer_listener" "listener_https" {
     verify_peer_certificate = false
     verify_depth = 0
   }
-  count = (var.create_fqdn ? 1 : 0)
-}
-
-resource "oci_load_balancer_listener" "listener_http" {
-  depends_on = [
-    oci_load_balancer_backend_set.load_balancer_backend_set
-  ]
-  default_backend_set_name = oci_load_balancer_backend_set.load_balancer_backend_set.name
-  load_balancer_id = oci_load_balancer_load_balancer.flexible_loadbalancer.id
-  name = "${var.application_name}_http"
-  port = 80
-  protocol = "HTTP"
-  count = (var.create_fqdn ? 0 : 1)
+  count = (var.open_https_port ? 1 : 0)
 }
 
 resource "oci_dns_rrset" "subdomain_rrset" {
