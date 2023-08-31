@@ -143,6 +143,7 @@ resource "null_resource" "create_config_repo" {
     working_dir = "${path.module}"
   }
 
+  count = (local.use-image ? 0 : 1)
 }
 
 resource "null_resource" "commit_config_repo" {
