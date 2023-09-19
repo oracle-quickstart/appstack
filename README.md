@@ -35,7 +35,7 @@ Please refer to the [usage instructions](./java/usage_instructions.md) for detai
 
 ## Tutorial
 
-[MyTodoList SpringBoot application tutorial](./tutorials/mytodolist/tutorial.md).
+[MyTodoList SpringBoot application tutorial](./java/tutorials/mytodolist/tutorial.md).
 
 
 # App Stack for .Net
