@@ -1,20 +1,20 @@
 App Stack
 =========
 
-This repository has automation for various application deployments on the Oracle Cloud Infrastructure (OCI) using serverless resources such as Container Instances and Autonomous Database. In the current version only Java applications are supported. 
+This repository has automation for various application deployments on the Oracle Cloud Infrastructure (OCI) using serverless resources such as Container Instances and Autonomous Database. 
 
 The Container Instances service is an ideal deployment platform as it is serverless and cost effective.
+
+**App Stack** is a customizable Terraform Stack designed to automate the deployment of applications (the backend only) in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
+
+![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
+
 # Target Applications
 
 **Web applications** Server-side HTML applications, a.k.a. servlets or Java Server Pages
 **Back-end servers** REST APIs
+
 # App Stack for Java
-
-**App Stack for Java** is a customizable Terraform Stack designed to automate the deployment of Java applications (the backend only) in a serverless infrastructure. Follow the instructions below to learn how to utilize the stack to seamlessly deploy Java applications to Container Instances, creating a production-ready environment.
-
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.4/appstackforjava.zip) 
-
-![Blueprint architecture](https://github.com/oracle-quickstart/appstack/blob/main/images/blueprintarchitecture.svg)
 
 Your Java application can be packaged in 3 ways:
 1. As **source code**: this is the most valuable use case. Your source code can be in a github repo and mirrored in OCI DevOps (see details below). The stack will create a build pipeline that:
@@ -27,14 +27,28 @@ Your Java application can be packaged in 3 ways:
 
 In all cases the deployment is done on Container Instances behind a load balancer.
 
-## Release and status
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-quickstart/appstack/releases/download/v0.1.4/appstackforjava.zip) 
+
+## Usage Instructions
+
+Please refer to the [usage instructions](./java/usage_instructions.md) for details about each field of the stack form.
+
+## Tutorial
+
+[MyTodoList SpringBoot application tutorial](./tutorials/mytodolist/tutorial.md).
+
+
+# App Stack for .Net
+TODO : write .Net specific description
+
+# Release and status
  - This is v0.1.4: initial release as a preview.
 
-## Prerequisites
+# Prerequisites
 
-For deploying your Java App with the App Stack, here is the list of OCI prerequisites.
+For deploying your application with the App Stack, here is the list of OCI prerequisites.
 
-- **DevOps project (optional):** A Java application in an OCI DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image.
+- **DevOps project (optional):** An application in an OCI DevOps project (can be a mirror of an existing GitHub repo). This isn't required if the application is provided as a container image.
 - **Database:** an existing Autonomous Database  - Shared Infrastructure (ADB-S) can be used with the stack. The stack may create a new one, if specified during the Stack configuration. 
 - **Vault (optional):** An authentication token can either be provided or created by the stack. It is used for connecting to the DevOps repos. A Vault is necessary to store this token, the Vault isn't required if the application is provided as a container image.
 - **DNS (optional):** A DNS zone for creating the application URL (for example https://myapp.domain.com). If not provided during the stack configuration, the application will be available through the load balancer's public IP. You can then configure your third-party DNS provider to point to this IP address.
@@ -55,7 +69,7 @@ For deploying your Java App with the App Stack, here is the list of OCI prerequi
   Allow dynamic-group 'appstack-devops' to manage devops-family in tenancy
   ```
   
-## Which Cloud Resources will be used?
+# Which Cloud Resources will be used?
 
 The [Oracle Cloud Free Tier service](https://www.oracle.com/cloud/free/) allows you to  build, test, and deploy your applications on Oracle Cloud for free. Upon signing up, the service comes with a $300 credit with 30 days expiration; following the expiration or the exhaustion of the credit, most of the provisioned services remain available  as [Always Free](https://www.oracle.com/cloud/free/#always-free). You may add additional credit for services that do not fall under Always-Free.
 - **Container Instances** for building and running  the app. This service is part of Free-Tier but not an Always-Free resource. 
@@ -67,12 +81,7 @@ The [Oracle Cloud Free Tier service](https://www.oracle.com/cloud/free/) allows 
 - **HTTPS Certificates**. This service is part of Always-Free with some limits. 
 - **DNS** for application URL. This service is part of Free-Tier but not an Always-Free resource. 
 
-
-## Usage Instructions
-
-Please refer to the [usage instructions](./usage_instructions.md) for details about each field of the stack form.
-
-### What will the stack do?
+## What will the stack do?
 
  - Create a new repository called "<application-name>_config" that includes:
    - **wallet.zip:** The database wallet (the zip that includes tnsnames.ora, cwallet.sso and ojdbc.properties) If the database wallet is rotated this zip file needs to be updated.
@@ -87,34 +96,30 @@ Please refer to the [usage instructions](./usage_instructions.md) for details ab
  - Terraform script for provisioning the Autonomous Database
  - Dependencies to pull JDBC, UCP, R2DBC, and so on from Maven  Central. 
 
-## Destroying the stack
+# Destroying the stack
 
 Before you can destroy the stack and all the resources that have been created you must manually delete the artifact that the stack has created under the "Artifact Registry".
 
-## Tutorial
-
-[MyTodoList SpringBoot application tutorial](./tutorials/mytodolist/tutorial.md).
-
-## Contributing
+# Contributing
 
 This project welcomes contributions from the community. Before submitting a pull
 request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
 
-## License
+# License
 
 Copyright (c) 2023, Oracle and/or its affiliates.
 Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 See [LICENSE](./LICENSE) for more details.
 
-## Support
+# Support
 
 Please review the [troubleshooting document](./troubleshooting/troubleshooting.md).
 For support you can [file issues on GitHub](https://github.com/oracle-quickstart/appstack/issues).
 You can also send an email to the product team at "appstack_ww at oracle.com".
 
-## Appendix
+# Appendix
 
-### Build instructions
+## Build instructions
 To build the zip on a mac from this directory:
 ```
 zip -r ../appstackforjava.zip . -x "*.git*" -x "*.DS_Store" -x "images/*" -x "listing/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
