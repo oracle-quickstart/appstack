@@ -15,7 +15,7 @@ This section describes the packaging and deployment of your application for the 
 <details>
   <summary>Java</Summary>
 
-![](./screenshots/2_Application.png)
+![](./java/screenshots/2_Application.png)
 
 The stack supports different kinds of deployments: *source code* deployment, java *artifact* deployment or *container image* deployment. Each type of deployment has different prerequisites and requires different parameters. *Source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (mirrored repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and *container image* deployment requires the *container image* to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
 
