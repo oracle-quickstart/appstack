@@ -17,7 +17,7 @@ on:
           - dotnet
 jobs:
   call-workflow-passing-data:
-    uses: oracle-quickstart/appstack/.github/workflows/build.yml@$${{ github.event.inputs.branch }}
+    uses: oracle-quickstart/appstack/.github/workflows/build.yml
     with:
       branch: ${{ github.event.inputs.branch }}
       type: ${{ github.event.inputs.type }}
