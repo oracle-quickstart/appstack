@@ -10,7 +10,10 @@ Choose the **compute compartment** and **availability domain** where will all re
 
 ## Your Application
 
-This section describes the packaging and deployment of your application.
+This section describes the packaging and deployment of your application for the different programming languages :
+
+<details>
+  <summary>Java</Summary>
 
 ![](./screenshots/2_Application.png)
 
@@ -37,6 +40,12 @@ The stack supports different kinds of deployments: *source code* deployment, jav
        - **DevOps compartment:** select the compartment where the DevOps project will be created
        - **Full path to the image in the container registry**
        - **Exposed port:** port exposed by the container image
+
+</details>
+<details>
+  <summary>.Net</summary>
+  TODO : complete
+</details>
 
 ## Stack authentication
 
