@@ -23,7 +23,7 @@ jobs:
       - name: create-artifact
         run: |
           ls -lai
-          mv ${{ inputs.type }}/* .
+          find ./${{ inputs.type }} -maxdepth 1 -type f | xargs mv -t .
           sed -i -e "/###HEADER###/r interface-header.yaml" -e "//d" interface.yaml
           rm interface-header.yaml
           sed -i -e "/###APPLICATION_GROUP###/r interface-application-group.yaml" -e "//d" interface.yaml
