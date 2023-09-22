@@ -5,4 +5,4 @@ jobs:
     uses: oracle-quickstart/appstack/.github/workflows/build.yml@main
     with:
       branch: ${{github.ref_name}}
-      type: 'java'
+      type: 'dotnet'
