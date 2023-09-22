@@ -1,0 +1,71 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+# This workflow will build and push a .Net application to OCI based on an artifact
+version: 0.1
+component: build
+timeoutInSeconds: 10000
+shell: bash
+env:
+  vaultVariables:
+    OCI_TOKEN : "${oci_token}"
+    DB_USER_PASSWORD : "${db_user_password}"
+    WALLET_PASSWORD : "${wallet_password}"
+inputArtifacts:
+  - name: dotnetapp
+    type: GENERIC_ARTIFACT
+    artifactId: $${artifactId}
+    registryId: ${registryId} 
+    path: ${artifact_path}
+    version: $${artifact_version}
+    location: $${OCI_WORKSPACE_DIR}/${config_repo_name}/${fileName}
+steps: 
+  - type: Command
+    name: Unzip wallet
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
+      unzip wallet.zip -d wallet
+  - type: Command
+    name: Download oraclepki and add username and password to wallet
+    timeoutInSeconds: 300
+    failImmediatelyOnError: true
+    command: |
+      cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
+      curl -o oraclepki.jar "https://repo1.maven.org/maven2/com/oracle/database/security/oraclepki/23.2.0.0/oraclepki-23.2.0.0.jar" -L
+      echo -e '#/bin/sh\njava -cp oraclepki.jar oracle.security.pki.OracleSecretStoreTextUI -wrl wallet -createCredential "${db_connection_url}" "${db_username}" "'$${DB_USER_PASSWORD}'" <<EOF\n'$${WALLET_PASSWORD}'\nEOF' >> add-credential-wallet.sh
+      sh add-credential-wallet.sh
+  - type: Command
+    name: Unzip dotnet app
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
+      unzip ${fileName}
+      cp -r ${artifact_location} dotnetapp
+  - type: Command
+    name: Get dotnet apm agent
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
+      curl -o apm-dotnet-agent-installer-0.6.0.136.zip -L https://objectstorage.us-phoenix-1.oraclecloud.com/p/Q9f_7e-AG4Gwl0rI7ILNFzKmtI0-zIjNu8lWFcf5Gh5o53vGnNVuEc8hnWG5_WZw/n/oracleonpremjava/b/bucket-apm-installer/o/apm-dotnet-agent-installerapm-dotnet-agent-installer-0.6.0.136.zip
+      unzip apm-dotnet-agent-installer-0.6.0.136.zip -d apm
+  - type: Command
+    name: Build Docker image
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      docker build . --file Dockerfile --tag ${image_remote_tag}:${image_tag}-$${artifact_version} --tag ${image_latest_tag}
+  - type: Command
+    name: Login to repo
+    timeoutInSeconds: 900
+    failImmediatelyOnError: true
+    command: |
+      echo $${OCI_TOKEN} | docker login ${container_registry_repo} --username ${login} --password-stdin
+  - type: Command
+    name: Push image
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      docker push ${image_remote_tag} --all-tags

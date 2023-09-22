@@ -1,0 +1,111 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+  # Application configuration
+  use_connection_url_env:
+    type: boolean
+    title: Set connection URL environment variable
+    default: true
+    description: Assuming that your application can consume an environment variable to configure the URL, this field can be used to specify the name of the environment variable.
+  connection_url_env:
+    type: string
+    title: Connection URL environment variable name
+    description: Specify the name of the environment variable. Its value will be set automatically by the stack.
+    required: true
+    default: "DATASOURCE_URL"
+    visible: use_connection_url_env
+  use_username_env:
+    type: boolean
+    title: Set username environment variable
+    description: Assuming that your application can consume an environment variable to configure the database username, this field can be used to specify the name of the environment variable.
+    default: false
+    visible: 
+      eq: 
+        - application_source
+        - "IMAGE"
+  username_env:
+    type: string
+    title: Database user environment variable name
+    description: Only the name of the environment variable is needed. The value will be automatically set. If a new database is created, the database ADMIN user will be used.
+    required: true
+    default: "DATASOURCE_USERNAME"
+    visible: use_username_env
+  use_password_env:
+    type: boolean
+    title: Set password environment variable
+    description: Assuming that your application can consume an environment variable to configure the database user's password, this field can be used to specify the name of the environment variable.
+    default: false
+    visible: 
+      eq: 
+        - application_source
+        - "IMAGE"
+  password_env:
+    type: string
+    title: Database user's password environment variable name
+    description: Specify the name of the environment variable. Its value will be set automatically by the stack. If a new database is created, the database ADMIN user will be used.
+    required: true
+    default: "DATASOURCE_PASSWORD"
+    visible: use_password_env
+  use_tns_admin_env:
+    type: boolean
+    title: Set TNS_ADMIN environment variable
+    description: Assuming that your application can consume an environment variable to configure TNS_ADMIN, this field can be used to specify the name of the environment variable.
+    default: true
+    visible: 
+      eq: 
+        - application_source
+        - "IMAGE"
+  tns_admin_env:
+    type: string
+    title: TNS_ADMIN environment variable name
+    description: Specify the name of the environment variable (Ex. TNS_ADMIN).
+    required: true
+    default: "TNS_ADMIN"
+    visible: 
+      and: 
+        - use_tns_admin_env
+        - eq: 
+          - application_source
+          - "IMAGE"
+  # SSL properties
+  cert_pem:
+    type: text
+    multiline: true
+    title: SSL certificate
+    required: true
+    visible:
+      eq:
+        - application_source
+        - "IMAGE"
+  private_key_pem:
+    type: text
+    multiline: true
+    title: Private key
+    required: true
+    visible:
+      eq:
+        - application_source
+        - "IMAGE"
+  ca_pem:
+    type: text
+    multiline: true
+    title: CA certificate
+    required: true
+    visible:
+      eq:
+        - application_source
+        - "IMAGE"
+  # Other configuration
+  other_environment_variables:
+    type: string
+    title: Other environment variables
+    description: If your application can be configured through environment variables you can configure them here. Separate variables with semicolon (var1=value1;var2=value2).
+  program_arguments:
+    type: string
+    title: Program arguments
+    description: These space-separated program arguments are passed to the .Net application process at startup.
+    visible:
+      not:
+        - eq:
+          - application_source
+          - "IMAGE"

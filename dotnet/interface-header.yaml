@@ -1,0 +1,14 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+title: "App Stack for .NET"
+description: |
+  The App Stack for .NET can deploy existing .NET applications to serverless Container Instances behind a load balancer in the Oracle Cloud. It supports multiple options: the source code of the application is in DevOps, the application is uploaded as a .NET artifact (zip archive), or as a container image.
+schemaVersion: 1.1.0
+version: "v0.1.4"
+informationalText: |
+  For more information and product documentation please visit the <a href="https://github.com/oracle-quickstart/appstack/">App Stack project page</a> .
+
+logoUrl: "https://cloudmarketplace.oracle.com/marketplace/content?contentId=58352039"
+
+locale: "en"

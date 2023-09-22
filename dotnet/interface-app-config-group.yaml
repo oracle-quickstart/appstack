@@ -1,0 +1,20 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+      - use_connection_url_env
+      - connection_url_env
+      - use_tns_admin_env
+      - tns_admin_env
+      - use_username_env
+      - username_env
+      - use_password_env
+      - password_env
+  - title: "Other parameters"
+    variables:
+      - other_environment_variables
+      - program_arguments
+  - title: "Application configuration - SSL communication between backends and load balancer"
+    variables:      
+      - cert_pem
+      - private_key_pem
+      - ca_pem

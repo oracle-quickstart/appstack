@@ -1,0 +1,61 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+# dockerfile for running the .NET application using Oracle Linux 8 image
+FROM container-registry.oracle.com/os/oraclelinux:8
+
+# install asp.net core runtime and its dependencies 
+RUN dnf install -y aspnetcore-runtime-6.0 && \
+  rm -rf /var/cache/dnf
+
+# create a user so to avoid deploying the application in root directory
+RUN useradd -U -d /home/appuser appuser && \
+  mkdir /opt/dotnetapp && \
+  mkdir /opt/dotnetapp/apm && \
+  chown appuser:appuser /opt/dotnetapp /opt/dotnetapp/apm
+
+# switch the user and create a working directory
+USER appuser
+WORKDIR /opt/dotnetapp
+
+# copy application, certificate and wallet folder to working directory
+COPY --chown=appuser:appuser servercert.pfx /https/servercert.pfx
+COPY --chown=appuser:appuser /dotnetapp .
+COPY --chown=appuser:appuser wallet ./wallet
+
+# set environment variables for running the application on HTTPS port
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+ENV ASPNETCORE_URLS="https://+:${exposed_port}"
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=${keystore_password}
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/servercert.pfx
+
+# copy apm installer files to working directory
+COPY --chown=appuser:appuser /apm ./apm
+
+# set environment variables for apm
+ENV COR_ENABLE_PROFILING=1
+ENV COR_PROFILER="{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+ENV COR_PROFILER_PATH_64=/opt/dotnetapp/apm/tracer-home/win-x64/OpenTelemetry.AutoInstrumentation.Native.dll
+ENV COR_PROFILER_PATH_32=/opt/dotnetapp/apm/tracer-home/win-x86/OpenTelemetry.AutoInstrumentation.Native.dll
+ENV CORECLR_ENABLE_PROFILING=1
+ENV CORECLR_PROFILER="{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+ENV CORECLR_PROFILER_PATH_64=/opt/dotnetapp/apm/tracer-home/win-x64/OpenTelemetry.AutoInstrumentation.Native.dll
+ENV CORECLR_PROFILER_PATH_32=/opt/dotnetapp/apm/tracer-home/win-x86/OpenTelemetry.AutoInstrumentation.Native.dll
+ENV DOTNET_ADDITIONAL_DEPS=/opt/dotnetapp/apm/tracer-home/AdditionalDeps
+ENV DOTNET_SHARED_STORE=/opt/dotnetapp/apm/tracer-home/store
+ENV DOTNET_STARTUP_HOOKS=/opt/dotnetapp/apm/tracer-home/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
+ENV OTEL_DOTNET_AUTO_HOME=/apm/tracer-home
+ENV OTEL_DOTNET_AUTO_INTEGRATIONS_FILE=/opt/dotnetapp/apm/tracer-home/integrations.json
+ENV OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES="OpenTelemetry.ODP"
+ENV OTEL_SERVICE_NAME="${application_name}"
+ENV OTEL_LOGS_EXPORTER="none"
+ENV OTEL_DOTNET_AUTO_EXCLUDE_PROCESSES="dotnet.exe,dotnet"
+ENV OTEL_EXPORTER_OTLP_ENDPOINT="${endpoint}/20200101/opentelemetry"
+ENV OTEL_EXPORTER_OTLP_HEADERS="Authorization=dataKey ${private_data_key}"
+ENV ENABLE_BACKGROUND_ODP=true
+ENV ENABLE_CONNECTION_ODP=true
+
+EXPOSE ${exposed_port}
+
+# set the entrypoint of the container to run the application
+ENTRYPOINT ["dotnet", "${dll_name}" ${program_arguments}]

@@ -1,0 +1,106 @@
+# Copyright (c) 2023, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+  application_name:
+    type: string
+    required: true
+    title: Application name
+    description: This name will be used to name other needed resources.
+  nb_copies:
+    type: number
+    required: true
+    title: Number of deployments
+    description: This is the number of container instances that will be deployed.
+  application_source:
+    type: enum
+    title: "Application source"
+    default: "SOURCE_CODE"
+    description: You can deploy an application that is either a container image, a .NET artifact (zip archive) or from the source code.
+    required: true
+    enum:
+      - IMAGE
+      - ARTIFACT
+      - SOURCE_CODE
+  devops_compartment:
+    type: oci:identity:compartment:id
+    required: true
+    title: DevOps compartment
+    description: Compartment containing the DevOps project
+    default: ${compartment_id}
+    visible: 
+      not:
+        - eq:
+          - application_source
+          - "SOURCE_CODE"    
+  repo_name:
+    type: string
+    required: true
+    title: DevOps repository (OCID)
+    description: OCID of the repository containing the application source code.
+    visible: 
+      eq: 
+        - application_source
+        - "SOURCE_CODE"
+  branch:
+    type: string
+    required: true
+    title: Branch used for build / deployment
+    description: Name of the branch to be built, deployed and on which a trigger will be installed for continuous deployment.
+    default: main
+    visible: 
+      eq: 
+        - application_source
+        - "SOURCE_CODE"
+  build_command:
+    type: string
+    required: true
+    title: Application build command
+    description: "Example: dotnet publish {project-path}/{project-name}.csproj -c Release"
+    visible:
+      eq: 
+        - application_source
+        - "SOURCE_CODE"
+  artifact_location:
+    type: string
+    required: true
+    title: Output Path
+    description: "Output path of publish folder. Example: bin/{BUILD-CONFIGURATION}/{TFM}/publish/{project-name}.dll"
+    visible:
+      not:
+          - eq:
+            - application_source
+            - "IMAGE"
+  artifact_id:
+    type: string
+    required: true
+    title: Artifact OCID
+    visible: 
+      eq: 
+        - application_source
+        - "ARTIFACT"
+  registry_id:
+    type: string
+    required: true
+    title: Artifact repository OCID
+    visible: 
+      eq: 
+        - application_source
+        - "ARTIFACT"
+  image_path:
+    type: string
+    required: true
+    title: Full path to the image in container registry
+    visible: 
+      eq: 
+        - application_source
+        - "IMAGE"
+  exposed_port:
+    type: string
+    required: true
+    title: Exposed port
+    description: This is the backend port on which the application is listening.
+    default: 8443
+    visible: 
+      eq: 
+        - application_source
+        - "IMAGE"
