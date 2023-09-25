@@ -49,7 +49,7 @@ steps:
     failImmediatelyOnError: true
     command: |
       cd $${OCI_WORKSPACE_DIR}/${config_repo_name}
-      curl -o apm-dotnet-agent-installer-0.6.0.136.zip -L https://objectstorage.us-phoenix-1.oraclecloud.com/p/Q9f_7e-AG4Gwl0rI7ILNFzKmtI0-zIjNu8lWFcf5Gh5o53vGnNVuEc8hnWG5_WZw/n/oracleonpremjava/b/bucket-apm-installer/o/apm-dotnet-agent-installerapm-dotnet-agent-installer-0.6.0.136.zip
+      curl -o apm-dotnet-agent-installer-0.6.0.136.zip -L https://oracleonpremjava.objectstorage.us-phoenix-1.oci.customer-oci.com/p/zUJ17UiAhHxWe3bE0qRMsg0IHFQWIKsZXzBlGd1AqxxUCgBhWhcj2iF9i9jLHy-Q/n/oracleonpremjava/b/bucket-apm-installer/o/apm-dotnet-agent-installerapm-dotnet-agent-installer-0.6.0.136.zip
       unzip apm-dotnet-agent-installer-0.6.0.136.zip -d apm
   - type: Command
     name: Build Docker image
