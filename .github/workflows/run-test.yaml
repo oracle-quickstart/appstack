@@ -31,14 +31,15 @@ jobs:
         with:
           name: appstackfor${{ inputs.type }}
           path: ./test
-      - name: run-test
+      - name: install-java
         uses: actions/setup-java@v3
         with:
           distribution: 'oracle'
           java-version: '17'
+      - name: run-test
         env:
           OCI_PRIVATE_KEY_PEM: ${{ secrets.OCI_PRIVATE_KEY_PEM }}          
-      - run: |
+        run: |
           cd test
           ls -lai
           echo "$OCI_PRIVATE_KEY_PEM"
