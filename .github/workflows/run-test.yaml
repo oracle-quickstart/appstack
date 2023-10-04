@@ -1,7 +1,6 @@
 name: 'Test appstack'
 on: 
-  push:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       branch: 
         description: Branch name
