@@ -30,7 +30,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: appstackfor${{ inputs.type }}
-          path: ./test/appstackfor${{ inputs.type }}.zip
+          path: ./test
       - name: run-test
         uses: actions/setup-java@v3
         with:
@@ -41,5 +41,4 @@ jobs:
       - run: |
           cd test
           ls -lai
-          ls -lai appstackforjava.zip
           java -jar appstack-test.jar appstackfor${{ inputs.type }}.zip input.json
