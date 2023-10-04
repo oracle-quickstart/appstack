@@ -40,4 +40,5 @@ jobs:
           OCI_PRIVATE_KEY_PEM: ${{ secrets.OCI_PRIVATE_KEY_PEM }}          
       - run: |
           cd test
+          ls -lai
           java -jar appstack-test.jar appstackfor${{ inputs.type }}.zip input.json
