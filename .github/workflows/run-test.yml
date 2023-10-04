@@ -18,7 +18,7 @@ jobs:
     with:
       branch: ${{github.ref_name}}
       type: 'java'
-  build:
+  run-test:
     needs: call-workflow-passing-data
     runs-on: ubuntu-latest
     steps:
