@@ -35,7 +35,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'oracle'
-          java-version: '11'
+          java-version: '17'
         env:
           OCI_PRIVATE_KEY_PEM: ${{ secrets.OCI_PRIVATE_KEY_PEM }}          
       - run: |
