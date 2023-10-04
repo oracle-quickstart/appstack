@@ -18,7 +18,7 @@ jobs:
     with:
       branch: ${{github.ref_name}}
       type: 'java'
-  build:
+  run-test:
     needs: call-workflow-passing-data
     runs-on: ubuntu-latest
     steps:
@@ -38,9 +38,11 @@ jobs:
           java-version: '17'
       - name: run-test
         env:
+          OCI_TENANCY_OCID: ${{ secrets.OCI_TENANCY_OCID }}          
+          OCI_COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}          
+          OCI_USER_OCID: ${{ secrets.OCI_USER_OCID }}          
           OCI_PRIVATE_KEY_PEM: ${{ secrets.OCI_PRIVATE_KEY_PEM }}          
+          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}          
         run: |
           cd test
-          ls -lai
-          echo "$OCI_PRIVATE_KEY_PEM"
           java -jar appstack-test.jar appstackfor${{ inputs.type }}.zip input.json
