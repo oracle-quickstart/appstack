@@ -46,4 +46,4 @@ jobs:
           OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}          
         run: |
           cd test
-          java -jar appstack-test.jar appstackfor${{ inputs.type }}.zip input.json
+          java -jar appstack-test.jar appstackfor${{ inputs.type }}.zip input-${{ inputs.type }}.json
