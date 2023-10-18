@@ -10,9 +10,12 @@ Choose the **compute compartment** and **availability domain** where will all re
 
 ## Your Application
 
-This section describes the packaging and deployment of your application.
+This section describes the packaging and deployment of your application for the different programming languages :
 
-![](./screenshots/2_Application.png)
+<details>
+  <summary>Java</Summary>
+
+![](./java/screenshots/2_Application.png)
 
 The stack supports different kinds of deployments: *source code* deployment, java *artifact* deployment or *container image* deployment. Each type of deployment has different prerequisites and requires different parameters. *Source code* deployment is possible if the *source code* of the application is stored in OCI DevOps (mirrored repositories from other sources like GitHub to OCI DevOps); Java *artifact* deployment requires a Java *artifact* to be present if the OCI *artifact* Registry; and *container image* deployment requires the *container image* to the present in an OCI Container Registry accessible by the Stack, the image must be configured to respond to HTTPS requests through the exposed port.
 
@@ -37,6 +40,12 @@ The stack supports different kinds of deployments: *source code* deployment, jav
        - **DevOps compartment:** select the compartment where the DevOps project will be created
        - **Full path to the image in the container registry**
        - **Exposed port:** port exposed by the container image
+
+</details>
+<details>
+  <summary>.Net</summary>
+  TODO : complete
+</details>
 
 ## Stack authentication
 
