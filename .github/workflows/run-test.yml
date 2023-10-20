@@ -1,0 +1,49 @@
+name: 'Test appstack'
+on: 
+  workflow_dispatch:
+    inputs:
+      branch: 
+        description: Branch name
+        required: true
+        default: 'main'
+        type: string
+      type: 
+        description: Stack type
+        required: true
+        default: 'java'
+        type: string
+jobs:
+  call-workflow-passing-data:
+    uses: ./.github/workflows/build.yml
+    with:
+      branch: ${{github.ref_name}}
+      type: 'java'
+      artifact-prefix: ${{github.sha}}_
+  run-test:
+    needs: call-workflow-passing-data
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+      - name: download-artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{github.sha}}_appstackfor${{ inputs.type }}
+          path: ./test
+      - name: install-java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'oracle'
+          java-version: '17'
+      - name: run-test
+        env:
+          OCI_TENANCY_OCID: ${{ secrets.OCI_TENANCY_OCID }}          
+          OCI_COMPARTMENT_OCID: ${{ secrets.OCI_COMPARTMENT_OCID }}          
+          OCI_USER_OCID: ${{ secrets.OCI_USER_OCID }}          
+          OCI_PRIVATE_KEY_PEM: ${{ secrets.OCI_PRIVATE_KEY_PEM }}          
+          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}          
+        run: |
+          cd test
+          java -jar appstack-test.jar appstackfor${{ inputs.type }}.zip input-${{ inputs.type }}.json
