@@ -59,7 +59,6 @@ variableGroups:
       - dns_compartment
       - zone
       - subdomain
-      - certificate_ocid
   - title: "Network"
     variables:
       - create_new_vcn
@@ -76,6 +75,9 @@ variableGroups:
       - existing_lb_subnet_id
       - lb_subnet_cidr
       - open_https_port
+      - certificate_ocid
+      - use_reserved_ip_address
+      - reserved_ip_address
       - use_default_lb_configuration
       - maximum_bandwidth_in_mbps
       - minimum_bandwidth_in_mbps
@@ -284,12 +286,6 @@ variables:
     title: Host name
     description: The host name will be created on the selected Zone and will resolve to the the load balancer's IP address.
     visible : create_fqdn
-  certificate_ocid:
-    type: string
-    required: true
-    title: Certificate OCID
-    description: You must have a SSL certificate available in OCI Certificates service. Provide the certificate OCID for the host name.
-    visible : create_fqdn
   # Network
   create_new_vcn:
     type: boolean
@@ -416,6 +412,26 @@ variables:
       subnet public and to open the HTTPS port of the load balancer to the 
       Internet.
     default: false
+  certificate_ocid:
+    type: string
+    required: true
+    title: Certificate OCID
+    description: You must have a SSL certificate available in OCI Certificates service. Provide the certificate OCID for the host name.
+    visible : open_https_port
+  use_reserved_ip_address:
+    type: boolean
+    required: true
+    title: Use a reserved IP address
+    visible: open_https_port
+  reserved_ip_address:
+    type: string
+    required: true
+    title: Reserved IP address
+    description: Pre-created public IP that will be used as the IP of this load balancer. This reserved IP will not be deleted when load balancer is deleted. This ip should not be already mapped to any other resource.
+    visible:
+      and:
+        - open_https_port
+        - use_reserved_ip_address
   # Container instances configuration
   shape:
     type: enum
