@@ -41,9 +41,6 @@ data "template_file" "catalina_sh" {
 
 # build spec file
 data "template_file" "oci_build_config" {
-  depends_on = [
-    oci_vault_secret.auth_token_secret
-  ]
   template = "${(local.use-repository ? file("${path.module}/build-repo.yaml.template") : file("${path.module}/build-artifact.yaml.template"))}"
   vars = {
     image_remote_tag = "${local.image-remote-tag}"
@@ -55,7 +52,6 @@ data "template_file" "oci_build_config" {
     artifact_location = var.artifact_location
     artifact_path = (local.use-artifact ? data.oci_artifacts_generic_artifact.app_artifact[0].artifact_path : "")
     artifact_version = (local.use-artifact ? data.oci_artifacts_generic_artifact.app_artifact[0].version : "")
-    oci_token = local.auth_token_secret
     repo_name = (local.use-repository ? data.oci_devops_repository.devops_repository[0].name : "")
     config_repo_name = local.config_repo_name
     artifactId = (local.use-artifact ? var.artifact_id : "")

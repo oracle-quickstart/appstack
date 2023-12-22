@@ -177,12 +177,48 @@ resource "oci_devops_build_pipeline_stage" "art_build_pipeline_stage" {
   count = local.use-artifact ? 1 : 0
 }
 
+# image artifact
+resource "oci_devops_deploy_artifact" "container_image_artifact" {
+  argument_substitution_mode = "NONE"
+  deploy_artifact_type       = "OCIR"
+  project_id                 = local.project_id
+  display_name               = "Container image"
+
+  deploy_artifact_source {
+    image_uri = local.image-latest-tag
+  }
+}
+
+
+# push image to container registry
+resource "oci_devops_build_pipeline_stage" "push_image_to_container_registry" {
+    build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
+    build_pipeline_stage_predecessor_collection {
+        items {
+            id = (local.use-repository ? oci_devops_build_pipeline_stage.repo_build_pipeline_stage[0].id : oci_devops_build_pipeline_stage.art_build_pipeline_stage[0].id)
+        }
+    }
+    build_pipeline_stage_type = "DELIVER_ARTIFACT"
+
+    deploy_pipeline_id = oci_devops_deploy_pipeline.deploy_pipeline.id
+    description = "Push image to container registry"
+    display_name = "Push image to container registry"
+
+    deliver_artifact_collection {
+      items {
+        artifact_id = oci_devops_deploy_artifact.container_image_artifact.id
+        artifact_name = "application_image"
+      }
+    }
+    is_pass_all_parameters_enabled = false
+}
+
 # artifact or source case:
 resource "oci_devops_build_pipeline_stage" "trigger_deployment" {
     build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
     build_pipeline_stage_predecessor_collection {
         items {
-            id = (local.use-repository ? oci_devops_build_pipeline_stage.repo_build_pipeline_stage[0].id : oci_devops_build_pipeline_stage.art_build_pipeline_stage[0].id)
+            id = oci_devops_build_pipeline_stage.push_image_to_container_registry.id
         }
     }
     build_pipeline_stage_type = "TRIGGER_DEPLOYMENT_PIPELINE"

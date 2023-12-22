@@ -400,18 +400,6 @@ variable "is_free_tier" {
   default = false
 }
 
-variable "use_existing_token" {
-  type = bool
-  description = "Create authentication token for current user"
-  default = false
-}
-
-variable "current_user_token" {
-  type = string
-  default = ""
-  sensitive = true
-}
-
 locals {
   # application name with branch
   application_name = (var.branch == "" ? var.application_name : "${var.application_name}-${var.branch}")
@@ -425,10 +413,6 @@ locals {
   login = "${data.oci_identity_tenancy.tenancy.name}/${local.service-username}"
   # login, namespace + username (Container Registry)
   login_container = "${local.namespace}/${local.service-username}"
-  # authentication token
-  app_auth_token = var.use_existing_token ? var.current_user_token : oci_identity_auth_token.auth_token[0].token
-  # Authentication token secret
-  auth_token_secret = oci_vault_secret.auth_token_secret.id
   # Container registry url
   container-registry-repo = "${local.region_key}.ocir.io"
   # image name
