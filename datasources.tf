@@ -90,7 +90,7 @@ data "template_file" "ssh_config" {
   ]
   template = "${file("${path.module}/ssh_config.template")}"
   vars = {
-    "user" = local.login
+    "user" = local.ssh_login
   }
 }
 

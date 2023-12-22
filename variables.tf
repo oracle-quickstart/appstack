@@ -411,6 +411,8 @@ locals {
   service-username = data.oci_identity_user.current_user.name
   # login, tenancy + username (DevOps)
   login = "${data.oci_identity_tenancy.tenancy.name}/${local.service-username}"
+  # ssh login
+  ssh_login = "${local.service-username}@${data.oci_identity_tenancy.tenancy.name}"
   # login, namespace + username (Container Registry)
   login_container = "${local.namespace}/${local.service-username}"
   # Container registry url
