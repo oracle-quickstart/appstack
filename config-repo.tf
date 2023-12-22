@@ -121,7 +121,7 @@ resource "null_resource" "create_config_repo" {
 
   # clone new repository
   provisioner "local-exec" {
-    command = "git clone ${oci_devops_repository.config_repo[0].http_url}"
+    command = "git clone ${oci_devops_repository.config_repo[0].ssh_url}"
     on_failure = fail
     working_dir = "${path.module}"
   }
