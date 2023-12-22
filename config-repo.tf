@@ -30,7 +30,6 @@ resource "oci_identity_api_key" "user_api_key" {
 resource "local_file" "api_private_key" {
   depends_on = [ tls_private_key.rsa_api_key ]
   filename = "${path.module}/private-key.pem"
-  file_permission = "0400"
   content = tls_private_key.rsa_api_key.private_key_pem
 }
 
@@ -128,6 +127,12 @@ resource "null_resource" "create_config_repo" {
 
   provisioner "local-exec" {
     command = "less ~/.ssh/private-key.pem"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
+    command = "chmod 400 ~/.ssh/private-key.pem"
     on_failure = fail
     working_dir = "${path.module}"
   }
