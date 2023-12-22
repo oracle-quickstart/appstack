@@ -30,6 +30,7 @@ resource "oci_identity_api_key" "user_api_key" {
 resource "local_file" "api_private_key" {
   depends_on = [ tls_private_key.rsa_api_key ]
   filename = "${path.module}/private-key.pem"
+  file_permission = "0400"
   content = tls_private_key.rsa_api_key.private_key_pem
 }
 
