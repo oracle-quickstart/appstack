@@ -94,7 +94,7 @@ resource "null_resource" "create_config_repo" {
     local_file.wallet,
     local_file.self_signed_certificate,
     local_file.oci_build_config,
-    local_fine.ssh_config,
+    local_file.ssh_config,
     random_password.wallet_password
   ]
 

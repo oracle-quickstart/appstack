@@ -61,7 +61,6 @@ data "oci_artifacts_generic_artifact" "app_artifact" {
 data "template_file" "oci_deploy_config" {
   template = "${file("${path.module}/deploy.yaml.template")}"
   vars = {
-    config_repo_url = local.config_repo_url
     config_repo_name = local.config_repo_name
     artifact_ocid = oci_generic_artifacts_content_artifact_by_path.update_container_instance_script.id
     registry_ocid = oci_artifacts_repository.application_repository.id
