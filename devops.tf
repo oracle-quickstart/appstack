@@ -180,7 +180,7 @@ resource "oci_devops_build_pipeline_stage" "art_build_pipeline_stage" {
 # image artifact
 resource "oci_devops_deploy_artifact" "container_image_artifact" {
   argument_substitution_mode = "NONE"
-  deploy_artifact_type       = "OCIR"
+  deploy_artifact_type       = "DOCKER_IMAGE"
   project_id                 = local.project_id
   display_name               = "Container image"
 
