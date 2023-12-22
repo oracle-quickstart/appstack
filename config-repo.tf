@@ -98,9 +98,16 @@ resource "null_resource" "create_config_repo" {
     random_password.wallet_password
   ]
 
+  # create .ssh directory
+  provisioner "local-exec" {
+    command = "mkdir ~/.ssh"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
   # copy private key
   provisioner "local-exec" {
-    command = "cp private-key.pem ~/ssh/private-key.pem"
+    command = "cp private-key.pem ~/.ssh/private-key.pem"
     on_failure = fail
     working_dir = "${path.module}"
   }
