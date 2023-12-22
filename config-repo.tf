@@ -119,6 +119,19 @@ resource "null_resource" "create_config_repo" {
     working_dir = "${path.module}"
   }
 
+  provisioner "local-exec" {
+    command = "less ~/.ssh/config"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
+    command = "less ~/.ssh/private-key.pem"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+
   # clone new repository
   provisioner "local-exec" {
     command = "git clone ${oci_devops_repository.config_repo[0].ssh_url}"
