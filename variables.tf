@@ -452,9 +452,6 @@ locals {
   #     : data.oci_identity_api_keys.dbconnection_api_key.api_keys[0].key_value
   # )
   config_repo_name = "${local.application_name}-config"
-  config_repo_url = (local.use-image 
-    ? ""
-    : replace(oci_devops_repository.config_repo[0].http_url, "https://", "https://${urlencode(local.login)}:${urlencode(local.app_auth_token)}@"))
   # database OCID
   database_ocid = (var.use_existing_database ? var.autonomous_database : oci_database_autonomous_database.database[0].id)
   # database username
