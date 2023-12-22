@@ -2,7 +2,7 @@ name: 'Build on push'
 on: push
 jobs:
   call-workflow-passing-data:
-    uses: oracle-quickstart/appstack/.github/workflows/build.yml@main
+    uses: fmeheust/appstack/.github/workflows/build.yml@main
     with:
       branch: ${{github.ref_name}}
       type: 'java'
