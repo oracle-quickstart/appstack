@@ -193,6 +193,11 @@ resource "oci_devops_deploy_artifact" "container_image_artifact" {
 
 # push image to container registry
 resource "oci_devops_build_pipeline_stage" "push_image_to_container_registry" {
+  depends_on = [ 
+    oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
+    oci_devops_build_pipeline_stage.art_build_pipeline_stage,
+    oci_artifacts_container_repository.application-container-repository
+  ]
     build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
     build_pipeline_stage_predecessor_collection {
         items {
@@ -217,7 +222,9 @@ resource "oci_devops_build_pipeline_stage" "push_image_to_container_registry" {
 
 # artifact or source case:
 resource "oci_devops_build_pipeline_stage" "trigger_deployment" {
-  depends_on = [ oci_devops_build_run.create_docker_image ]
+  depends_on = [ 
+    oci_container_instances_container_instance.app_container_instance
+  ]
     build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
     build_pipeline_stage_predecessor_collection {
         items {
@@ -245,13 +252,13 @@ resource "oci_devops_trigger" "generated_oci_devops_trigger" {
 	actions {
 		build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
 		type = "TRIGGER_BUILD_PIPELINE"
-	filter {
-	  trigger_source = "DEVOPS_CODE_REPOSITORY"
-	  events = ["PUSH"]
-	  include {
-	    head_ref = var.branch
-	  }
-	}
+    filter {
+      trigger_source = "DEVOPS_CODE_REPOSITORY"
+      events = ["PUSH"]
+      include {
+        head_ref = var.branch
+      }
+    }
 	}
 	display_name = "${local.application_name}-trigger"
 	project_id = local.project_id
@@ -310,7 +317,7 @@ resource "oci_devops_deploy_pipeline" "deploy_pipeline" {
   display_name = "${local.application_name}-deploy"
 }
 
- resource "oci_devops_deploy_stage" "deploy_stage" {
+resource "oci_devops_deploy_stage" "deploy_stage" {
    depends_on = [
     oci_devops_deploy_pipeline.deploy_pipeline
   ]
