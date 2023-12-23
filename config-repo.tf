@@ -29,7 +29,7 @@ resource "oci_identity_api_key" "user_api_key" {
 
 resource "local_file" "api_private_key" {
   depends_on = [ tls_private_key.rsa_api_key ]
-  filename = "${path.module}/private-key.pem"
+  filename = "${path.module}/api-private-key.pem"
   content = tls_private_key.rsa_api_key.private_key_pem
 }
 
@@ -107,7 +107,7 @@ resource "null_resource" "create_config_repo" {
 
   # copy private key
   provisioner "local-exec" {
-    command = "cp private-key.pem ~/.ssh/private-key.pem"
+    command = "cp api-private-key.pem ~/.ssh/private-key.pem"
     on_failure = fail
     working_dir = "${path.module}"
   }
