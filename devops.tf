@@ -217,6 +217,7 @@ resource "oci_devops_build_pipeline_stage" "push_image_to_container_registry" {
 
 # artifact or source case:
 resource "oci_devops_build_pipeline_stage" "trigger_deployment" {
+  depends_on = [ oci_devops_build_run.create_docker_image ]
     build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
     build_pipeline_stage_predecessor_collection {
         items {
