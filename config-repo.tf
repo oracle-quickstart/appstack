@@ -138,6 +138,12 @@ resource "null_resource" "create_config_repo" {
   }
 
   provisioner "local-exec" {
+    command = "chmod 600 ~/.ssh/config"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
     command = "ls -lai ~/.ssh"
     on_failure = fail
     working_dir = "${path.module}"
