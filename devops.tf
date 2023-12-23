@@ -212,6 +212,7 @@ resource "oci_devops_build_pipeline_stage" "push_image_to_container_registry" {
       }
     }
     is_pass_all_parameters_enabled = false
+    count = (local.use-image ? 0 : 1)
 }
 
 # artifact or source case:
@@ -219,7 +220,7 @@ resource "oci_devops_build_pipeline_stage" "trigger_deployment" {
     build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
     build_pipeline_stage_predecessor_collection {
         items {
-            id = oci_devops_build_pipeline_stage.push_image_to_container_registry.id
+            id = oci_devops_build_pipeline_stage.push_image_to_container_registry[0].id
         }
     }
     build_pipeline_stage_type = "TRIGGER_DEPLOYMENT_PIPELINE"
@@ -237,6 +238,7 @@ resource "oci_devops_trigger" "generated_oci_devops_trigger" {
   depends_on = [
     oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
     oci_devops_build_pipeline_stage.art_build_pipeline_stage,
+    oci_devops_build_pipeline_stage.push_image_to_container_registry,
     oci_artifacts_container_repository.application-container-repository
   ]
 	actions {
@@ -265,6 +267,7 @@ resource "oci_devops_build_run" "create_docker_image" {
     oci_devops_build_pipeline.build_pipeline_artifact,
     oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
     oci_devops_build_pipeline_stage.art_build_pipeline_stage,
+    oci_devops_build_pipeline_stage.push_image_to_container_registry,
     null_resource.commit_config_repo
   ]
   dynamic "build_run_arguments" {
