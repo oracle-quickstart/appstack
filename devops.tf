@@ -300,9 +300,6 @@ resource "oci_devops_deploy_artifact" "deploy_yaml_artifact" {
 }
 
 resource "oci_devops_deploy_pipeline" "deploy_pipeline" {
-  depends_on = [
-    oci_devops_deploy_artifact.deploy_yaml_artifact
-  ]
   project_id   = local.project_id
   description  = "Deploy pipeline"
   display_name = "${local.application_name}-deploy"
