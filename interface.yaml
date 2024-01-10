@@ -30,8 +30,6 @@ variableGroups:
 ###APPLICATION_GROUP###
   - title: "Stack authentication"
     variables:
-      - use_existing_token
-      - current_user_token
       - use_existing_vault
       - new_vault_display_name
       - vault_compartment_id
@@ -246,17 +244,6 @@ variables:
     visible:
       and:
         - use_existing_vault
-  use_existing_token:
-    type: boolean
-    required: true
-    title: Use existing authentication token
-    description: This token will be used by the stack to authenticate the user when connecting to the code repository or container registry.
-    default: true
-  current_user_token:
-    type: password
-    required: true
-    title: User's authentication token
-    visible: use_existing_token
 ###APP_CONFIG###
   # FQDN
   create_fqdn:

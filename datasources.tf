@@ -59,13 +59,8 @@ data "oci_artifacts_generic_artifact" "app_artifact" {
 
 # build spec file
 data "template_file" "oci_deploy_config" {
-  depends_on = [
-    oci_vault_secret.auth_token_secret
-  ]
   template = "${file("${path.module}/deploy.yaml.template")}"
   vars = {
-    oci_token = local.auth_token_secret
-    config_repo_url = local.config_repo_url
     config_repo_name = local.config_repo_name
     artifact_ocid = oci_generic_artifacts_content_artifact_by_path.update_container_instance_script.id
     registry_ocid = oci_artifacts_repository.application_repository.id
@@ -87,6 +82,16 @@ data "template_file" "deploy_script" {
     "container_instance_id" = oci_container_instances_container_instance.app_container_instance[count.index].id
   }
   count = var.nb_copies
+}
+
+data "template_file" "ssh_config" {
+  depends_on = [
+    local_file.api_private_key
+  ]
+  template = "${file("${path.module}/ssh_config.template")}"
+  vars = {
+    "user" = local.ssh_login
+  }
 }
 
 data "oci_identity_api_keys" "dbconnection_api_key" {
