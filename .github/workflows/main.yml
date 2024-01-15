@@ -10,7 +10,7 @@ on:
       type: 
         description: Stack type
         required: true
-        default: 'main'
+        default: 'java'
         type: choice
         options:
           - java
