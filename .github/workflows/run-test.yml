@@ -44,8 +44,8 @@ jobs:
           OCI_USER_OCID: ${{ secrets.OCI_USER_OCID }}          
           OCI_PRIVATE_KEY_PEM: ${{ secrets.OCI_PRIVATE_KEY_PEM }}          
           OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}       
-          OCI_TEST_INPUT_JAVA: ${{ secrets.OCI_TEST_INPUT_JAVA }}
+          OCI_TEST_INPUT_DOTNET: ${{ secrets.OCI_TEST_INPUT_DOTNET }}
         run: |
           cd test
-          echo $OCI_TEST_INPUT_JAVA > input-${{ inputs.type }}.json
+          echo $OCI_TEST_INPUT_DOTNET > input-${{ inputs.type }}.json
           java -jar appstack-test.jar appstackfor${{ inputs.type }}.zip input-${{ inputs.type }}.json
