@@ -56,6 +56,21 @@ resource "null_resource" "language_specific_files" {
   null_resource.war_specific_files 
   ]
 
+  # copy the pom file used to download the latest version of the APM agent
+  provisioner "local-exec" {
+    command = "cp ../java/pom.xml ./pom.xml"
+    on_failure = fail
+    working_dir = "${path.module}/${local.config_repo_name}"
+  }
+
+  # add pom.xml to git
+  provisioner "local-exec" {
+    command = "git add ./pom.xml"
+    on_failure = fail
+    working_dir = "${path.module}/${local.config_repo_name}"
+  }
+
+
   provisioner "local-exec" {
     command = "keytool -importkeystore -noprompt -srckeystore server.p12 -destkeystore self.keystore -srcstoretype pkcs12 -alias self_signed -srcstorepass \"${random_password.keystore_password.result}\" -deststorepass \"${random_password.keystore_password.result}\""
     on_failure = fail

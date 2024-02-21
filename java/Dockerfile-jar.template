@@ -10,12 +10,14 @@ RUN useradd -U -d /home/appuser appuser && \
   mkdir /opt/apm-agent && \
   chown appuser:appuser /opt/app /opt/apm /opt/apm-agent 
 
+RUN dnf install maven -y
+
 USER appuser
 WORKDIR /home/appuser
 # COPY --chown=appuser:appuser .oci .
 
 WORKDIR /opt/apm
-COPY --chown=appuser:appuser java/pom.xml .
+COPY --chown=appuser:appuser pom.xml .
 RUN mvn dependency:get -Dartifact="com.oracle.apm.agent.java:apm-java-agent-installer:LATEST" -Dtransitive=false -Ddest=.
 RUN rm pom.xml
 RUN mv apm-java-agent-installer*.jar apm-java-agent-installer.jar

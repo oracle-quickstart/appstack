@@ -7,6 +7,8 @@ ENV CATALINA_HOME=/opt/tomcat
 
 # COPY .oci root/.oci
 
+RUN dnf install maven -y
+
 RUN mkdir /opt/app
 COPY self.keystore /opt/app/self.keystore
 COPY wallet /opt/app/wallet
@@ -14,8 +16,11 @@ COPY wallet /opt/app/wallet
 RUN mkdir /apm
 RUN mkdir /apm-agent
 WORKDIR /apm
-RUN curl -o apm-java-agent-installer-1.9.20.29.jar "https://repo1.maven.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/1.9.20.29/apm-java-agent-installer-1.9.20.29.jar" -L
-RUN java -jar ./apm-java-agent-installer-1.9.20.29.jar provision-agent -service-name=${application_name} -destination=/apm-agent -private-data-key=${private_data_key} -data-upload-endpoint=${endpoint}
+COPY --chown=appuser:appuser pom.xml .
+RUN mvn dependency:get -Dartifact="com.oracle.apm.agent.java:apm-java-agent-installer:LATEST" -Dtransitive=false -Ddest=.
+RUN rm pom.xml
+RUN mv apm-java-agent-installer*.jar apm-java-agent-installer.jar
+RUN java -jar ./apm-java-agent-installer.jar provision-agent -service-name=${application_name} -destination=/apm-agent -private-data-key=${private_data_key} -data-upload-endpoint=${endpoint}
 
 # download Tomcat
 RUN mkdir /opt/tomcat
