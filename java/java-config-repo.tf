@@ -58,7 +58,7 @@ resource "null_resource" "language_specific_files" {
 
   # copy the pom file used to download the latest version of the APM agent
   provisioner "local-exec" {
-    command = "cp ../java/pom.xml ./pom.xml"
+    command = "cp ../pom.xml ./pom.xml"
     on_failure = fail
     working_dir = "${path.module}/${local.config_repo_name}"
   }
