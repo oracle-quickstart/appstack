@@ -15,8 +15,11 @@ WORKDIR /home/appuser
 # COPY --chown=appuser:appuser .oci .
 
 WORKDIR /opt/apm
-RUN curl -o apm-java-agent-installer-1.9.20.29.jar "https://repo1.maven.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/1.9.20.29/apm-java-agent-installer-1.9.20.29.jar" -L
-RUN java -jar ./apm-java-agent-installer-1.9.20.29.jar provision-agent -service-name=${application_name} -destination=/opt/apm-agent -private-data-key=${private_data_key} -data-upload-endpoint=${endpoint}
+COPY --chown=appuser:appuser java/pom.xml .
+RUN mvn dependency:get -Dartifact="com.oracle.apm.agent.java:apm-java-agent-installer:LATEST" -Dtransitive=false -Ddest=.
+RUN rm pom.xml
+RUN mv apm-java-agent-installer*.jar apm-java-agent-installer.jar
+RUN java -jar ./apm-java-agent-installer.jar provision-agent -service-name=${application_name} -destination=/opt/apm-agent -private-data-key=${private_data_key} -data-upload-endpoint=${endpoint}
 
 WORKDIR /opt/app
 COPY --chown=appuser:appuser self.keystore .
