@@ -16,9 +16,10 @@ RUN mkdir /apm-agent
 WORKDIR /apm
 RUN curl https://repo.maven.apache.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/maven-metadata.xml -o maven-metadata.xml
 RUN grep -e 'latest' maven-metadata.xml  > maven-metadata-latest.xml 
-ENV apmversion=$( sed -e 's/<[^>]*>//g' maven-metadata-latest.xml | tr -d ' ')
-RUN rm maven-metadata*
-RUN curl https://repo.maven.apache.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/$${apmversion}/apm-java-agent-installer-$${apmversion}.jar -o apm-java-agent-installer.jar
+RUN APMVERSION="$(cat maven-metadata-latest.xml | tr -d '<latest>' | tr -d '</latest>' | tr -d ' ')" && \
+  URL="https://repo.maven.apache.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/${APMVERSION}/apm-java-agent-installer-${APMVERSION}.jar" && \
+  rm maven-metadata* && \
+  curl "${URL}" -o apm-java-agent-installer.jar
 RUN java -jar ./apm-java-agent-installer.jar provision-agent -service-name=${application_name} -destination=/apm-agent -private-data-key=${private_data_key} -data-upload-endpoint=${endpoint}
 
 # download Tomcat
