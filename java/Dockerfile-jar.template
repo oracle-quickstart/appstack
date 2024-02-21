@@ -16,8 +16,8 @@ WORKDIR /home/appuser
 
 WORKDIR /opt/apm
 RUN curl https://repo.maven.apache.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/maven-metadata.xml -o maven-metadata.xml
-ENV apmversion=$(grep -oP '(?<=latest>)[^<]+' "maven-metadata.xml")
-RUN curl https://repo.maven.apache.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/${apmversion}/apm-java-agent-installer-{apmversion}.jar -o apm-java-agent-installer.jar
+ENV apmversion=$$(grep -oP '(?<=latest>)[^<]+' "maven-metadata.xml")
+RUN curl https://repo.maven.apache.org/maven2/com/oracle/apm/agent/java/apm-java-agent-installer/$${apmversion}/apm-java-agent-installer-$${apmversion}.jar -o apm-java-agent-installer.jar
 RUN java -jar ./apm-java-agent-installer.jar provision-agent -service-name=${application_name} -destination=/opt/apm-agent -private-data-key=${private_data_key} -data-upload-endpoint=${endpoint}
 
 WORKDIR /opt/app
