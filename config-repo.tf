@@ -16,6 +16,29 @@ resource "oci_devops_repository" "config_repo" {
   count = (local.use-image ? 0 : 1)
 }
 
+resource "tls_private_key" "rsa_api_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "oci_identity_api_key" "user_api_key" {
+    #Required
+    key_value = tls_private_key.rsa_api_key.public_key_pem
+    user_id = var.current_user_ocid
+}
+
+resource "local_file" "api_private_key" {
+  depends_on = [ tls_private_key.rsa_api_key ]
+  filename = "${path.module}/api-private-key.pem"
+  content = tls_private_key.rsa_api_key.private_key_pem
+}
+
+resource "local_file" "ssh_config" {
+  filename = "${path.module}/ssh_config"
+  content = data.template_file.ssh_config.rendered
+}
+
+
 # creates necessary files to configure Docker image
 # creates the Dockerfile
 resource "local_file" "dockerfile" {
@@ -71,12 +94,64 @@ resource "null_resource" "create_config_repo" {
     local_file.wallet,
     local_file.self_signed_certificate,
     local_file.oci_build_config,
+    local_file.ssh_config,
     random_password.wallet_password
   ]
 
+  # create .ssh directory
+  provisioner "local-exec" {
+    command = "mkdir ~/.ssh"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  # copy private key
+  provisioner "local-exec" {
+    command = "cp api-private-key.pem ~/.ssh/private-key.pem"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  # copy ssh-config
+  provisioner "local-exec" {
+    command = "cp ssh_config ~/.ssh/config"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
+    command = "less ~/.ssh/config"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
+    command = "less ~/.ssh/private-key.pem"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
+    command = "chmod 400 ~/.ssh/private-key.pem"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
+    command = "chmod 600 ~/.ssh/config"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
+  provisioner "local-exec" {
+    command = "ls -lai ~/.ssh"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
   # clone new repository
   provisioner "local-exec" {
-    command = "git clone ${local.config_repo_url}"
+    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no' clone ${oci_devops_repository.config_repo[0].ssh_url}"
     on_failure = fail
     working_dir = "${path.module}"
   }

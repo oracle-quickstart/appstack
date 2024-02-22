@@ -177,12 +177,58 @@ resource "oci_devops_build_pipeline_stage" "art_build_pipeline_stage" {
   count = local.use-artifact ? 1 : 0
 }
 
-# artifact or source case:
-resource "oci_devops_build_pipeline_stage" "trigger_deployment" {
+# image artifact
+resource "oci_devops_deploy_artifact" "container_image_artifact" {
+  argument_substitution_mode = "NONE"
+  deploy_artifact_type       = "DOCKER_IMAGE"
+  project_id                 = local.project_id
+  display_name               = "Container image"
+
+  deploy_artifact_source {
+    image_uri = local.image-latest-tag
+    deploy_artifact_source_type = "OCIR"
+  }
+}
+
+
+# push image to container registry
+resource "oci_devops_build_pipeline_stage" "push_image_to_container_registry" {
+  depends_on = [ 
+    oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
+    oci_devops_build_pipeline_stage.art_build_pipeline_stage,
+    oci_artifacts_container_repository.application-container-repository
+  ]
     build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
     build_pipeline_stage_predecessor_collection {
         items {
             id = (local.use-repository ? oci_devops_build_pipeline_stage.repo_build_pipeline_stage[0].id : oci_devops_build_pipeline_stage.art_build_pipeline_stage[0].id)
+        }
+    }
+    build_pipeline_stage_type = "DELIVER_ARTIFACT"
+
+    deploy_pipeline_id = oci_devops_deploy_pipeline.deploy_pipeline.id
+    description = "Push image to container registry"
+    display_name = "Push image to container registry"
+
+    deliver_artifact_collection {
+      items {
+        artifact_id = oci_devops_deploy_artifact.container_image_artifact.id
+        artifact_name = "application_image"
+      }
+    }
+    is_pass_all_parameters_enabled = false
+    count = (local.use-image ? 0 : 1)
+}
+
+# artifact or source case:
+resource "oci_devops_build_pipeline_stage" "trigger_deployment" {
+  depends_on = [ 
+    oci_devops_build_run.create_docker_image
+  ]
+    build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
+    build_pipeline_stage_predecessor_collection {
+        items {
+            id = oci_devops_build_pipeline_stage.push_image_to_container_registry[0].id
         }
     }
     build_pipeline_stage_type = "TRIGGER_DEPLOYMENT_PIPELINE"
@@ -198,20 +244,18 @@ resource "oci_devops_build_pipeline_stage" "trigger_deployment" {
 
 resource "oci_devops_trigger" "generated_oci_devops_trigger" {
   depends_on = [
-    oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
-    oci_devops_build_pipeline_stage.art_build_pipeline_stage,
-    oci_artifacts_container_repository.application-container-repository
+    oci_devops_build_run.create_docker_image
   ]
 	actions {
 		build_pipeline_id = (local.use-artifact ? oci_devops_build_pipeline.build_pipeline_artifact[0].id : oci_devops_build_pipeline.build_pipeline[0].id)
 		type = "TRIGGER_BUILD_PIPELINE"
-	filter {
-	  trigger_source = "DEVOPS_CODE_REPOSITORY"
-	  events = ["PUSH"]
-	  include {
-	    head_ref = var.branch
-	  }
-	}
+    filter {
+      trigger_source = "DEVOPS_CODE_REPOSITORY"
+      events = ["PUSH"]
+      include {
+        head_ref = var.branch
+      }
+    }
 	}
 	display_name = "${local.application_name}-trigger"
 	project_id = local.project_id
@@ -223,12 +267,7 @@ resource "oci_devops_trigger" "generated_oci_devops_trigger" {
 # run the pipeline
 resource "oci_devops_build_run" "create_docker_image" {
   depends_on = [
-    oci_artifacts_container_repository.application-container-repository,
-    oci_devops_build_pipeline.build_pipeline,
-    oci_devops_build_pipeline.build_pipeline_artifact,
-    oci_devops_build_pipeline_stage.repo_build_pipeline_stage,
-    oci_devops_build_pipeline_stage.art_build_pipeline_stage,
-    null_resource.commit_config_repo
+    oci_devops_build_pipeline_stage.push_image_to_container_registry
   ]
   dynamic "build_run_arguments" {
     for_each = local.use-artifact ? [1] : []
@@ -261,15 +300,12 @@ resource "oci_devops_deploy_artifact" "deploy_yaml_artifact" {
 }
 
 resource "oci_devops_deploy_pipeline" "deploy_pipeline" {
-  depends_on = [
-    oci_devops_deploy_artifact.deploy_yaml_artifact
-  ]
   project_id   = local.project_id
   description  = "Deploy pipeline"
   display_name = "${local.application_name}-deploy"
 }
 
- resource "oci_devops_deploy_stage" "deploy_stage" {
+resource "oci_devops_deploy_stage" "deploy_stage" {
    depends_on = [
     oci_devops_deploy_pipeline.deploy_pipeline
   ]

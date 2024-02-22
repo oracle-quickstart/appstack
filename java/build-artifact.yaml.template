@@ -7,7 +7,6 @@ timeoutInSeconds: 10000
 shell: bash
 env:
   vaultVariables:
-    OCI_TOKEN : "${oci_token}"
     DB_USER_PASSWORD : "${db_user_password}"
     WALLET_PASSWORD : "${wallet_password}"
 inputArtifacts:
@@ -41,15 +40,7 @@ steps:
     failImmediatelyOnError: true
     command: |
       docker build . --file Dockerfile --tag ${image_remote_tag}:${image_tag}-$${artifact_version} --tag ${image_latest_tag}
-  - type: Command
-    name: Login to repo
-    timeoutInSeconds: 900
-    failImmediatelyOnError: true
-    command: |
-      echo $${OCI_TOKEN} | docker login ${container_registry_repo} --username ${login} --password-stdin
-  - type: Command
-    name: Push image
-    timeoutInSeconds: 600
-    failImmediatelyOnError: true
-    command: |
-      docker push ${image_remote_tag} --all-tags
+outputArtifacts:
+  - name: application_image
+    type: DOCKER_IMAGE
+    location: ${image_latest_tag}
