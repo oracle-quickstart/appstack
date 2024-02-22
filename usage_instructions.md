@@ -135,6 +135,8 @@ This is optional but if you have a DNS domain that's managed in OCI you can conf
  - **DNS and Certificate compartement:** select the compartment containing the DNS Zone and the Certificate
  - **DNS zone:** Domain name in which the hostname will be created.
  - **Hostname:** The hostname will be created on the selected Zone and will resolve to the load balancer's IP address.
+ - **Certificate OCID:** certificate for the application URL, this certificate will be added to the load balancer
+
 
 ## Network
 
@@ -177,7 +179,6 @@ The load balancer subnet can either be a private or a public subnet. Resources i
  - Use existing load balancer subnet
    - **Select the load balancer subnet:** The Load Balancer will be created using this subnet. This list will contain both public and private subnets. Note that if a private subnet is chosen, the Load Balancer will not have a public IP address and will therefore not be directly accessible from the Internet.
  - **Open load balancer's HTTPS port:** By checking this checkbox you agree to make the load balancer subnet public and to open the HTTPS port of the load balancer to the Internet.
-   - **Certificate OCID:** certificate for the application URL, this certificate will be added to the load balancer
    - **Use a reserved IP address:** check this checkbox to use an existing reserved public IP address.
       - **Reserved IP address:** the reserved IP address to use 
 
