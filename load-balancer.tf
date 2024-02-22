@@ -128,7 +128,7 @@ resource "oci_load_balancer_listener" "listener_http" {
     oci_load_balancer_backend_set.load_balancer_backend_set
   ]
   default_backend_set_name = oci_load_balancer_backend_set.load_balancer_backend_set.name
-  load_balancer_id = oci_load_balancer.flexible_loadbalancer.id
+  load_balancer_id = oci_load_balancer_load_balancer.flexible_loadbalancer.id
   name = "${var.application_name}_http"
   port = 80
   protocol = "HTTP"
