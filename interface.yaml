@@ -57,6 +57,7 @@ variableGroups:
       - dns_compartment
       - zone
       - subdomain
+      - certificate_ocid
   - title: "Network"
     variables:
       - create_new_vcn
@@ -73,7 +74,6 @@ variableGroups:
       - existing_lb_subnet_id
       - lb_subnet_cidr
       - open_https_port
-      - certificate_ocid
       - use_reserved_ip_address
       - reserved_ip_address
       - use_default_lb_configuration
