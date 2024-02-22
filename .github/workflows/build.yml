@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
       - name: create-artifact
@@ -42,7 +42,7 @@ jobs:
           zip -r ./appstackfor${{ inputs.type }}.zip . -x "*.git*" -x "java/*" -x "test/*" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
           ls -lai
       - name: upload-artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact-prefix }}appstackfor${{ inputs.type }}
           path: ./appstackfor${{ inputs.type }}.zip
