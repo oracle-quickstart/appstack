@@ -156,12 +156,6 @@ variable "application_source" {
   description = "source of the application: IMAGE, JAR/WAR, source code"
 }
 
-variable "application_type" {
-  type = string
-  default = "not selected"
-  description = "application type : JAR, WAR"
-}
-
 variable "create_fqdn" {
   type = bool
   description = "create a FQDN that points to the load balancer"
@@ -200,33 +194,6 @@ variable "use_username_env" {
 variable "use_password_env" {
   type = bool
   default = false
-}
-
-# Application configuration - SSL properties
-variable "use_default_ssl_configuration" {
-  type = bool
-  default = false
-}
-variable "port_property" {
-  type = string
-  default = "server.port"
-}
-variable "keystore_property" {
-  type = string
-  default = "server.ssl.key-store"
-}
-variable "key_alias_property" {
-  type = string
-  default = "server.ssl.key-alias"
-}
-variable "keystore_password_property" {
-  type = string
-  default = "server.ssl.key-store-password"
-}
-
-variable "keystore_type_property" {
-  type = string
-  default = "server.ssl.key-store-type"
 }
 
 # Network configuration CIDR
@@ -351,11 +318,6 @@ variable "data_storage_size_in_tbs" {
   default = 1
 }
 
-# variable "cpu_core_count" {
-#   type = number
-#   default = 2
-# }
-
 variable "ocpu_count" {
   type = number
   default = 1
@@ -375,12 +337,6 @@ variable "env_variables" {
 variable "other_environment_variables" {
   type = string
   description = "Other envoronment variables"  
-  default = ""
-}
-
-variable "vm_options" {
-  type = string
-  description = "VM options"  
   default = ""
 }
 
@@ -452,7 +408,6 @@ variable "use_existing_token" {
 
 variable "current_user_token" {
   type = string
-#  description = "Authentication token for the current user"
   default = ""
   sensitive = true
 }
@@ -535,26 +490,13 @@ locals {
   # connection string index to use 0 for mTLS 5 for TLS
   conn_url_index = 0
   # database connection string
-  connection_str = (
+  escaped_connection_url = (
     var.use_existing_database 
       ? replace(replace(data.oci_database_autonomous_database.autonomous_database.connection_strings[0].profiles[local.conn_url_index].value, "description= ", "description="), "\"", "\\\"")
       : replace(replace(oci_database_autonomous_database.database[0].connection_strings[0].profiles[local.conn_url_index].value, "description= ", "description="), "\"", "\\\"")
   )
-  connection_url = (
-    var.use_existing_database 
-      ? replace(data.oci_database_autonomous_database.autonomous_database.connection_strings[0].profiles[local.conn_url_index].value, "description= ", "description=")
-      : replace(oci_database_autonomous_database.database[0].connection_strings[0].profiles[local.conn_url_index].value, "description= ", "description=")
-  )
   # FQDN
   domain_name = "${var.subdomain}.${var.zone}"
-  # Connection URL environment variable
-  connection_url_env = "ENV ${var.connection_url_env}=jdbc:oracle:thin:@${local.connection_str}" 
-  # Database username environment variable
-  username_env = "ENV ${var.username_env}=${local.username}" 
-  # Database password environment variable
-  password_env = "ENV ${var.password_env}=${local.password}" 
-  # TNS admin environment variable
-  tns_admin_env = "ENV ${var.tns_admin_env}=/opt/app/wallet" 
   # use repository (source code in devops)
   use-repository = (var.application_source == "SOURCE_CODE")
   # use artifact (jar or war)
@@ -566,10 +508,10 @@ locals {
   # filtered env variables
   env_variables_list = [
     for env in var.env_variables : 
-    (env == "CONN_URL" ? {name : "${var.connection_url_env}", value : "jdbc:oracle:thin:@${local.connection_url}"} :
+    (env == "CONN_URL" ? {name : "${var.connection_url_env}", value : local.driver_connection_url} :
     (env == "USERNAME" ? {name : "${var.username_env}", value : local.username} :
     (env == "PASSWORD" ? {name : "${var.password_env}", value : local.password} :
-    (env == "WALLET" ? {name : "${var.tns_admin_env}", value : "/opt/app/wallet"} : null))))
+    (env == "WALLET" ? {name : "${var.tns_admin_env}", value : local.wallet_path} : null))))
      if ((env == "CONN_URL" && var.use_connection_url_env) || 
          (env == "USERNAME" && var.use_username_env) ||
          (env == "PASSWORD" && var.use_password_env) ||

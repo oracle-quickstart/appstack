@@ -12,18 +12,23 @@ on:
         required: true
         default: 'java'
         type: string
+      artifact-prefix:
+        description: Artifact prefix
+        required: false
+        default: ''
+        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
       - name: create-artifact
         run: |
           ls -lai
-          mv ${{ inputs.type }}/* .
+          find ./${{ inputs.type }} -maxdepth 1 -type f | xargs mv -t .
           sed -i -e "/###HEADER###/r interface-header.yaml" -e "//d" interface.yaml
           rm interface-header.yaml
           sed -i -e "/###APPLICATION_GROUP###/r interface-application-group.yaml" -e "//d" interface.yaml
@@ -34,10 +39,10 @@ jobs:
           rm interface-application.yaml
           sed -i -e "/###APP_CONFIG###/r interface-app-config.yaml" -e "//d" interface.yaml
           rm interface-app-config.yaml
-          zip -r ./appstackfor${{ inputs.type }}.zip . -x "*.git*" -x "java/*" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
+          zip -r ./appstackfor${{ inputs.type }}.zip . -x "*.git*" -x "java/*" -x "test/*" -x "images/*" -x "listing/*" -x ".github/*" -x "*.md" -x "troubleshooting/*" -x "tutorials/*" -x "screenshots/*" -x "*.md"
           ls -lai
       - name: upload-artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: appstackfor${{ inputs.type }}
+          name: ${{ inputs.artifact-prefix }}appstackfor${{ inputs.type }}
           path: ./appstackfor${{ inputs.type }}.zip
