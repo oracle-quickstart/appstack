@@ -140,8 +140,8 @@ resource "oci_core_network_security_group_security_rule" "lb_ingress_https" {
   source_type = "CIDR_BLOCK"
   tcp_options {
     destination_port_range {
-      min = 443
-      max = 443
+      min = (var.create_fqdn ? 443 : 80)
+      max = (var.create_fqdn ? 443 : 80)
     }
   }
   count = var.open_https_port ? 1 : 0
