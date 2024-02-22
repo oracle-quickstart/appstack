@@ -400,6 +400,16 @@ variable "is_free_tier" {
   default = false
 }
 
+variable "use_reserved_ip_address" {
+  type = bool
+  default = false
+}
+
+variable "reserved_ip_address" {
+  type = string
+  default = ""
+}
+
 locals {
   # application name with branch
   application_name = (var.branch == "" ? var.application_name : "${var.application_name}-${var.branch}")
