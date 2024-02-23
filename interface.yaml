@@ -27,6 +27,7 @@ variableGroups:
     variables:
       - compartment_id
       - availability_domain
+
   ###APPLICATION_GROUP###
   - title: "Stack authentication"
     variables:
@@ -57,7 +58,6 @@ variableGroups:
       - dns_compartment
       - zone
       - subdomain
-      - certificate_ocid
   - title: "Network"
     variables:
       - create_new_vcn
@@ -76,6 +76,7 @@ variableGroups:
       - open_https_port
       - use_reserved_ip_address
       - reserved_ip_address
+      - certificate_ocid
       - use_default_lb_configuration
       - maximum_bandwidth_in_mbps
       - minimum_bandwidth_in_mbps
@@ -273,12 +274,6 @@ variables:
     title: Host name
     description: The host name will be created on the selected Zone and will resolve to the the load balancer's IP address.
     visible: create_fqdn
-  certificate_ocid:
-    type: string
-    required: true
-    title: Certificate OCID
-    description: You must have a SSL certificate available in OCI Certificates service. Provide the certificate OCID for the host name.
-    visible: create_fqdn
   # Network
   create_new_vcn:
     type: boolean
@@ -419,6 +414,13 @@ variables:
       and:
         - open_https_port
         - use_reserved_ip_address
+  certificate_ocid:
+    type: string
+    required: false
+    title: Certificate OCID
+    description: You must have a SSL certificate available in OCI Certificates service. Provide the certificate OCID for the host name.
+    visible: open_https_port
+
   # Container instances configuration
   shape:
     type: enum

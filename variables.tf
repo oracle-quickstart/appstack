@@ -136,7 +136,7 @@ variable "dns_compartment" {
 variable "certificate_ocid" {
   type = string
   description = "Cerfificate ocid"
-  default = "none"
+  default = ""
 }
 
 variable "subdomain" {
