@@ -415,7 +415,7 @@ variables:
         - use_reserved_ip_address
   certificate_ocid:
     type: string
-    required: create_fqdn
+    required: false
     title: Certificate OCID
     description: You must have a SSL certificate available in OCI Certificates service. Provide the certificate OCID for the host name.
     visible: open_https_port

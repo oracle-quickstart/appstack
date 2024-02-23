@@ -120,7 +120,7 @@ resource "oci_load_balancer_listener" "listener_https" {
     verify_peer_certificate = false
     verify_depth = 0
   }
-  count = (var.open_https_port ? ( var.certificate_ocid != "none" ? 1 : 0) : 0)
+  count = (var.open_https_port ? ( var.certificate_ocid != "" ? 1 : 0) : 0)
 }
 
 resource "oci_load_balancer_listener" "listener_http" {
