@@ -27,6 +27,7 @@ variableGroups:
     variables:
       - compartment_id
       - availability_domain
+
   ###APPLICATION_GROUP###
   - title: "Stack authentication"
     variables:
