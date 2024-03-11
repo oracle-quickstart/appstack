@@ -85,9 +85,6 @@ data "template_file" "deploy_script" {
 }
 
 data "template_file" "ssh_config" {
-  depends_on = [
-    local_file.api_private_key
-  ]
   template = "${file("${path.module}/ssh_config.template")}"
   vars = {
     "user" = local.ssh_login
