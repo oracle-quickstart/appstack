@@ -88,22 +88,9 @@ resource "null_resource" "create_config_repo" {
     working_dir = "${path.module}"
   }
 
-  # copy private key
-  provisioner "local-exec" {
-    command = "cp /root/.oci/oci_private.pem ~/.ssh/private-key.pem"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
   # copy ssh-config
   provisioner "local-exec" {
     command = "cp ssh_config ~/.ssh/config"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
-  provisioner "local-exec" {
-    command = "chmod 400 ~/.ssh/private-key.pem"
     on_failure = fail
     working_dir = "${path.module}"
   }
