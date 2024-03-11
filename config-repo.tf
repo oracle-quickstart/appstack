@@ -16,26 +16,6 @@ resource "oci_devops_repository" "config_repo" {
   count = (local.use-image ? 0 : 1)
 }
 
-resource "tls_private_key" "rsa_api_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-  count = (local.use-image ? 0 : 1)
-}
-
-resource "oci_identity_api_key" "user_api_key" {
-    #Required
-    key_value = tls_private_key.rsa_api_key[0].public_key_pem
-    user_id = var.current_user_ocid
-    count = (local.use-image ? 0 : 1)
-}
-
-resource "local_file" "api_private_key" {
-  depends_on = [ tls_private_key.rsa_api_key ]
-  filename = "${path.module}/api-private-key.pem"
-  content = tls_private_key.rsa_api_key[0].private_key_pem
-  count = (local.use-image ? 0 : 1)
-}
-
 resource "local_file" "ssh_config" {
   filename = "${path.module}/ssh_config"
   content = data.template_file.ssh_config.rendered
@@ -110,7 +90,7 @@ resource "null_resource" "create_config_repo" {
 
   # copy private key
   provisioner "local-exec" {
-    command = "cp api-private-key.pem ~/.ssh/private-key.pem"
+    command = "cp /root/.oci/oci_private.pem ~/.ssh/private-key.pem"
     on_failure = fail
     working_dir = "${path.module}"
   }
