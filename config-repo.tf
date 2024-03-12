@@ -107,6 +107,12 @@ resource "null_resource" "create_config_repo" {
     working_dir = "${path.module}"
   }
 
+  provisioner "local-exec" {
+    command = "ls -lai /root/.oci/"
+    on_failure = fail
+    working_dir = "${path.module}"
+  }
+
   # clone new repository
   provisioner "local-exec" {
     command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no' clone ${oci_devops_repository.config_repo[0].ssh_url}"
