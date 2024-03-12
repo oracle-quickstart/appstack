@@ -146,7 +146,7 @@ resource "null_resource" "create_config_repo" {
 
   provisioner "local-exec" {
     command = "ssh -o StrictHostKeyChecking=no -vT fernanda.meheust@oradbapisdev@devops.scmservice.us-ashburn-1.oci.oraclecloud.com"
-    on_failure = fail
+    on_failure = continue
     working_dir = "${path.module}"
   }
 
