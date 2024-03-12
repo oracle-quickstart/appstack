@@ -29,6 +29,14 @@ resource "oci_identity_api_key" "user_api_key" {
   count = (local.use-image ? 0 : 1)
 }
 
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [ oci_identity_api_key.user_api_key ]
+
+  create_duration = "30s"
+  destroy_duration = "0s"
+}
+
+
 resource "local_file" "api_private_key" {
   depends_on = [ tls_private_key.rsa_api_key ]
   filename = "${path.module}/api-private-key.pem"
@@ -99,6 +107,7 @@ resource "null_resource" "create_config_repo" {
     local_file.oci_build_config,
     local_file.ssh_config,
     local_file.api_private_key,
+    time_sleep.wait_30_seconds,
     oci_identity_api_key.user_api_key,
     random_password.wallet_password
   ]
@@ -134,16 +143,9 @@ resource "null_resource" "create_config_repo" {
     working_dir = "${path.module}"
   }
 
-  provisioner "local-exec" {
-    command = "ssh -o StrictHostKeyChecking=no -o ConnectionAttempts=30 -vT ${local.ssh_login}@devops.scmservice.${local.region_name}.oci.oraclecloud.com"
-    on_failure = continue
-    working_dir = "${path.module}"
-  }
-  
-
   # clone new repository
   provisioner "local-exec" {
-    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no -o ConnectionAttempts=30' clone ${oci_devops_repository.config_repo[0].ssh_url}"
+    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no' clone ${oci_devops_repository.config_repo[0].ssh_url}"
     on_failure = fail
     working_dir = "${path.module}"
   }
