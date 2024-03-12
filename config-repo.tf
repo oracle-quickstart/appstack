@@ -134,15 +134,9 @@ resource "null_resource" "create_config_repo" {
     working_dir = "${path.module}"
   }
 
-  provisioner "local-exec" {
-    command = "ssh -o StrictHostKeyChecking=no -T ${local.ssh_login}@devops.scmservice.${local.region_name}.oci.oraclecloud.com"
-    on_failure = continue
-    working_dir = "${path.module}"
-  }
-
   # clone new repository
   provisioner "local-exec" {
-    command = "git clone ${oci_devops_repository.config_repo[0].ssh_url}"
+    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no ConnectionAttempts=30' clone ${oci_devops_repository.config_repo[0].ssh_url}"
     on_failure = fail
     working_dir = "${path.module}"
   }
