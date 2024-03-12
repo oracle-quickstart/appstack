@@ -98,6 +98,8 @@ resource "null_resource" "create_config_repo" {
     local_file.self_signed_certificate,
     local_file.oci_build_config,
     local_file.ssh_config,
+    local_file.api_private_key,
+    oci_identity_api_key.user_api_key,
     random_password.wallet_password
   ]
 
@@ -133,26 +135,14 @@ resource "null_resource" "create_config_repo" {
   }
 
   provisioner "local-exec" {
-    command = "ls -lai ~/.ssh"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
-  provisioner "local-exec" {
-    command = "less ~/.ssh/api-private-key.pem"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
-  provisioner "local-exec" {
-    command = "ssh -o StrictHostKeyChecking=no -vT fernanda.meheust@oradbapisdev@devops.scmservice.us-ashburn-1.oci.oraclecloud.com"
+    command = "ssh -o StrictHostKeyChecking=no -T ${local.ssh_login}@devops.scmservice.${local.region_name}.oci.oraclecloud.com"
     on_failure = continue
     working_dir = "${path.module}"
   }
 
   # clone new repository
   provisioner "local-exec" {
-    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no' clone ${oci_devops_repository.config_repo[0].ssh_url}"
+    command = "git clone ${oci_devops_repository.config_repo[0].ssh_url}"
     on_failure = fail
     working_dir = "${path.module}"
   }
