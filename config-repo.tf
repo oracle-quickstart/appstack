@@ -25,7 +25,7 @@ resource "tls_private_key" "rsa_api_key" {
 
 resource "oci_identity_api_key" "user_api_key" {
   #Required
-  key_value = tls_private_key.rsa_api_key[0].private_key_pem
+  key_value = tls_private_key.rsa_api_key[0].public_key_pem
   user_id = var.current_user_ocid
   count = (local.use-image  || var.use_existing_api_key ? 0 : 1)
 }
