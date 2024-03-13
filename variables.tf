@@ -410,6 +410,16 @@ variable "reserved_ip_address" {
   default = ""
 }
 
+variable "use_existing_api_key" {
+  type = bool
+  default = false
+}
+
+variable "api_key" {
+  type = string
+  default = ""
+}
+
 locals {
   # application name with branch
   application_name = (var.branch == "" ? var.application_name : "${var.application_name}-${var.branch}")
