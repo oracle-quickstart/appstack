@@ -42,6 +42,7 @@ The stack supports different kinds of deployments: *source code* deployment, jav
 
 ![](./screenshots/7_Vault.png)
 
+
 An **API key** is used to authenticate the user when connecting to the code repository. The stack can either create a new API key or use an existing API key if the **private key** is provided.
 
 A **Vault** is used to store sensitive information such as authentication tokens and passwords. The stack can either use an existing vault (which can be in a different compartment) or create a new one.
