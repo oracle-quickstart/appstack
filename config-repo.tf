@@ -20,20 +20,20 @@ resource "oci_devops_repository" "config_repo" {
 resource "tls_private_key" "rsa_api_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
-  count = (local.use-image ? 0 : 1)
+  count = (local.use-image && !var.use_existing_api_key ? 0 : 1)
 }
 
 resource "oci_identity_api_key" "user_api_key" {
   #Required
   key_value = tls_private_key.rsa_api_key[0].public_key_pem
   user_id = var.current_user_ocid
-  count = (local.use-image ? 0 : 1)
+  count = (local.use-image  || var.use_existing_api_key ? 0 : 1)
 }
 
 resource "local_file" "api_private_key" {
   depends_on = [ tls_private_key.rsa_api_key ]
   filename = "${path.module}/api-private-key.pem"
-  content = tls_private_key.rsa_api_key[0].private_key_pem
+  content = (var.use_existing_api_key ? base64decode(var.api_key) : tls_private_key.rsa_api_key[0].private_key_pem)
   count = (local.use-image ? 0 : 1)
 }
 
