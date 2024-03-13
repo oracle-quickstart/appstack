@@ -415,8 +415,6 @@ locals {
   application_name = (var.branch == "" ? var.application_name : "${var.application_name}-${var.branch}")
   # region_key
   region_key = lower(data.oci_identity_regions.current_region.regions[0].key)
-  # region_name
-  region_name = lower(data.oci_identity_regions.current_region.regions[0].name)
   # namespace
   namespace = "${data.oci_objectstorage_namespace.os_namespace.namespace}"
   # Service username
