@@ -56,9 +56,6 @@
 	the stack will let you select the existing vault and key (AES). To create a new vault you must provide
 	the&nbsp;user-friendly name of the vault to create.</p>
 
-<p>An <strong>authentication token</strong> is used by the stack to authenticate the user when connecting to the code
-	repository or container registry. This token can either be provided or created by the stack.</p>
-
 <p><strong>Database</strong>: The stack assumes that the persistence is handled by a database and this section lets you
 	configure that database. You can either choose an existing database by selecting the database or create a new one.</p>
 
@@ -152,7 +149,6 @@
 	<li><strong>DNS zone</strong>: homain name managed in OCI DNS.</li>
 	<li><strong>Host name</strong>: host name that will be created on the selected Zone and will resolve to the the load
 		balancer&#39;s IP address.</li>
-	<li><strong>Certificate OCID</strong>: certificate for the application URL</li>
 </ul>
 
 <p><strong>Network</strong>: The stack is designed to create all of its resources in the same VCN. You have the choice
@@ -169,7 +165,9 @@
 	<li>The <strong>load balancer subnet </strong>can either be private (accessible from inside OCI) or public (accessible
 		from both OCI and the Internet). A NSG will be created and configured to allow the communication between the load
 		balancer and the application. If you chose to <em>open the load balancer to the internet</em>, the load balancer
-		subnet will be a public subnet and an Internet Gateway will be created.</li>
+		subnet will be a public subnet and an Internet Gateway will be created. A <strong>reserved IP</strong> address can
+		be used as the load balancer&#39;s public IP.</li>
+	<li>A c<strong>ertificate</strong> can be provided for the application URL</li>
 </ul>
 
 <p>By default the <em>load balancer</em> is configured with minimum and maximum bandwidth of 10Mbps, the health check
