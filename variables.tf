@@ -417,7 +417,7 @@ variable "use_existing_api_key" {
 
 variable "api_key" {
   type = string
-  default = ""
+  default = "none"
 }
 
 locals {

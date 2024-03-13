@@ -51,10 +51,10 @@
 	</li>
 </ul>
 
-<p><strong>Stack authentication</strong>: a Vault is used to store sensitive information such as authentication tokens
-	and passwords.&nbsp;The stack can either use an existing vault or create a new one.&nbsp;To use an existing key vault,
-	the stack will let you select the existing vault and key (AES). To create a new vault you must provide
-	the&nbsp;user-friendly name of the vault to create.</p>
+<p><strong>Stack authentication</strong>: the stack uses an API key to connect to the repository. A&nbsp;Vault is used
+	to store sensitive information such as passwords.&nbsp;The stack can either use an existing vault or create a new
+	one.&nbsp;To use an existing key vault, the stack will let you select the existing vault and key (AES). To create a
+	new vault you must provide the&nbsp;user-friendly name of the vault to create.</p>
 
 <p><strong>Database</strong>: The stack assumes that the persistence is handled by a database and this section lets you
 	configure that database. You can either choose an existing database by selecting the database or create a new one.</p>
@@ -167,7 +167,7 @@
 		balancer and the application. If you chose to <em>open the load balancer to the internet</em>, the load balancer
 		subnet will be a public subnet and an Internet Gateway will be created. A <strong>reserved IP</strong> address can
 		be used as the load balancer&#39;s public IP.</li>
-	<li>A c<strong>ertificate</strong> can be provided for the application URL</li>
+	<li>A <strong>certificate </strong>can be provided for the application URL</li>
 </ul>
 
 <p>By default the <em>load balancer</em> is configured with minimum and maximum bandwidth of 10Mbps, the health check

@@ -214,7 +214,7 @@ variables:
   api_key:
     type: file
     title: Private key
-    required: false
+    required: true
     visible: use_existing_api_key
   use_existing_vault:
     type: boolean
