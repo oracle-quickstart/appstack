@@ -112,7 +112,7 @@ resource "null_resource" "create_config_repo" {
 
   # copy ssh-config
   provisioner "local-exec" {
-    command = "cp ssh_config ~/.ssh/config"
+    command = "mv ssh_config ~/.ssh/config"
     on_failure = fail
     working_dir = "${path.module}"
   }
@@ -124,13 +124,7 @@ resource "null_resource" "create_config_repo" {
 
   # copy private key
   provisioner "local-exec" {
-    command = "cp api-private-key.pem ~/.ssh/api-private-key.pem"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
-  provisioner "local-exec" {
-    command = "less ~/.ssh/api-private-key.pem"
+    command = "mv api-private-key.pem ~/.ssh/api-private-key.pem"
     on_failure = fail
     working_dir = "${path.module}"
   }
@@ -143,21 +137,21 @@ resource "null_resource" "create_config_repo" {
 
   # clone new repository
   provisioner "local-exec" {
-    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no' clone ${oci_devops_repository.config_repo[0].ssh_url}"
+    command = "git config --global user.email \"${local.login}\""
     on_failure = fail
     working_dir = "${path.module}"
   }
 
   # clone new repository
   provisioner "local-exec" {
-    command = "git config --global user.email \"${local.login}\""
+    command = "git config --global user.name \"${local.service-username}\""
     on_failure = fail
     working_dir = "${path.module}"
   }
-
-    # clone new repository
+  
+  # clone new repository
   provisioner "local-exec" {
-    command = "git config --global user.name \"${local.service-username}\""
+    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no' clone ${oci_devops_repository.config_repo[0].ssh_url}"
     on_failure = fail
     working_dir = "${path.module}"
   }
