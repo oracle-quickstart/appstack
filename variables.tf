@@ -410,14 +410,16 @@ variable "reserved_ip_address" {
   default = ""
 }
 
-variable "use_existing_api_key" {
+variable "use_existing_token" {
   type = bool
+  description = "Create authentication token for current user"
   default = false
 }
 
-variable "api_key" {
+variable "current_user_token" {
   type = string
-  default = "none"
+  default = ""
+  sensitive = true
 }
 
 locals {
@@ -431,8 +433,10 @@ locals {
   service-username = data.oci_identity_user.current_user.name
   # login, tenancy + username (DevOps)
   login = "${data.oci_identity_tenancy.tenancy.name}/${local.service-username}"
-  # ssh login
-  ssh_login = "${local.service-username}@${data.oci_identity_tenancy.tenancy.name}"
+  # authentication token
+  app_auth_token = var.use_existing_token ? var.current_user_token : oci_identity_auth_token.auth_token[0].token
+  # Authentication token secret
+  auth_token_secret = oci_vault_secret.auth_token_secret.id  
   # login, namespace + username (Container Registry)
   login_container = "${local.namespace}/${local.service-username}"
   # Container registry url
@@ -467,13 +471,12 @@ locals {
         : var.image_path)
   # bucket name
   bucket_name = "${local.application_name}-bucket"
-  
-  # dbconnection_api_key_pem = (
-  #   length(data.oci_identity_api_keys.dbconnection_api_key.api_keys) == 0
-  #     ? oci_identity_api_key.dbconnection_api_key[0].key_value
-  #     : data.oci_identity_api_keys.dbconnection_api_key.api_keys[0].key_value
-  # )
+  # name of the config repository
   config_repo_name = "${local.application_name}-config"
+  # url of the config repository
+  config_repo_url = (local.use-image 
+    ? ""
+    : replace(oci_devops_repository.config_repo[0].http_url, "https://", "https://${urlencode(local.login)}:${urlencode(local.app_auth_token)}@"))
   # database OCID
   database_ocid = (var.use_existing_database ? var.autonomous_database : oci_database_autonomous_database.database[0].id)
   # database username

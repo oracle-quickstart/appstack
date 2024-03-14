@@ -1,3 +1,0 @@
-Host devops.scmservice.*.oci.oraclecloud.com
-User ${user}
-IdentityFile ~/.ssh/api-private-key.pem

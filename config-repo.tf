@@ -8,7 +8,6 @@
 
 # creates the git repo called "config-repo"
 resource "oci_devops_repository" "config_repo" {
-  depends_on = [ oci_identity_api_key.user_api_key ]
   name = local.config_repo_name
   project_id = local.project_id
   repository_type = "HOSTED"
@@ -16,32 +15,6 @@ resource "oci_devops_repository" "config_repo" {
   description = "Files needed to create the image and configure the application"
   count = (local.use-image ? 0 : 1)
 }
-
-resource "tls_private_key" "rsa_api_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-  count = (local.use-image && !var.use_existing_api_key ? 0 : 1)
-}
-
-resource "oci_identity_api_key" "user_api_key" {
-  #Required
-  key_value = tls_private_key.rsa_api_key[0].public_key_pem
-  user_id = var.current_user_ocid
-  count = (local.use-image  || var.use_existing_api_key ? 0 : 1)
-}
-
-resource "local_file" "api_private_key" {
-  depends_on = [ tls_private_key.rsa_api_key ]
-  filename = "${path.module}/api-private-key.pem"
-  content = (var.use_existing_api_key ? base64decode(var.api_key) : tls_private_key.rsa_api_key[0].private_key_pem)
-  count = (local.use-image ? 0 : 1)
-}
-
-resource "local_file" "ssh_config" {
-  filename = "${path.module}/ssh_config"
-  content = data.template_file.ssh_config.rendered
-}
-
 
 # creates necessary files to configure Docker image
 # creates the Dockerfile
@@ -98,45 +71,13 @@ resource "null_resource" "create_config_repo" {
     local_file.wallet,
     local_file.self_signed_certificate,
     local_file.oci_build_config,
-    local_file.ssh_config,
-    local_file.api_private_key,
+    oci_identity_auth_token.auth_token,
     random_password.wallet_password
   ]
 
-  # create .ssh directory
-  provisioner "local-exec" {
-    command = "mkdir ~/.ssh"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
-  # copy ssh-config
-  provisioner "local-exec" {
-    command = "cp ssh_config ~/.ssh/config"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-  provisioner "local-exec" {
-    command = "chmod 600 ~/.ssh/config"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
-  # copy private key
-  provisioner "local-exec" {
-    command = "cp api-private-key.pem ~/.ssh/api-private-key.pem"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-  provisioner "local-exec" {
-    command = "chmod 400 ~/.ssh/api-private-key.pem"
-    on_failure = fail
-    working_dir = "${path.module}"
-  }
-
   # clone new repository
   provisioner "local-exec" {
-    command = "git -c core.sshCommand='ssh -o StrictHostKeyChecking=no' clone ${oci_devops_repository.config_repo[0].ssh_url}"
+    command = "git clone ${local.config_repo_url}"
     on_failure = fail
     working_dir = "${path.module}"
   }
@@ -148,13 +89,13 @@ resource "null_resource" "create_config_repo" {
     working_dir = "${path.module}"
   }
 
-    # clone new repository
+  # clone new repository
   provisioner "local-exec" {
     command = "git config --global user.name \"${local.service-username}\""
     on_failure = fail
     working_dir = "${path.module}"
   }
-
+  
   # copy config to app directory
   provisioner "local-exec" {
     command = "cp build_spec.yaml ./${local.config_repo_name}/build_spec.yaml"
