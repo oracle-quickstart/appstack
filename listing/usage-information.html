@@ -51,10 +51,11 @@
 	</li>
 </ul>
 
-<p><strong>Stack authentication</strong>: the stack uses an API key to connect to the repository. A&nbsp;Vault is used
-	to store sensitive information such as passwords.&nbsp;The stack can either use an existing vault or create a new
-	one.&nbsp;To use an existing key vault, the stack will let you select the existing vault and key (AES). To create a
-	new vault you must provide the&nbsp;user-friendly name of the vault to create.</p>
+<p><strong>Stack authentication</strong>: a Vault is used to store sensitive information such as authentication tokens
+	and passwords. The stack can either use an existing vault or create a new one. To use an existing key vault, the stack
+	will let you select the existing vault and key (AES). To create a new vault you must provide a user-friendly name of
+	the vault to create. An <strong>authentication token</strong> is to authenticate the user when accessing the code
+	repository, it can either be provided or created by the stack.</p>
 
 <p><strong>Database</strong>: The stack assumes that the persistence is handled by a database and this section lets you
 	configure that database. You can either choose an existing database by selecting the database or create a new one.</p>
