@@ -42,8 +42,10 @@ The stack supports different kinds of deployments: *source code* deployment, jav
 
 ![](./screenshots/7_Vault.png)
 
+An **authentication token** is used by the stack to authenticate the user when connecting to the code repository. This token can either be provided or created by the stack. **Note** that there is a limit on the maximum number of authentication tokens a user can have and that once the token is generated it will not be displayed again.
 
-An **API key** is used to authenticate the user when connecting to the code repository. The stack can either create a new API key or use an existing API key if the **private key** is provided.
+To use an existing token:
+  - **User's authentication token:** provide the user's authentication token
 
 A **Vault** is used to store sensitive information such as authentication tokens and passwords. The stack can either use an existing vault (which can be in a different compartment) or create a new one.
 
