@@ -205,17 +205,6 @@ variables:
       and:
         - use_existing_database
   # Vault
-  use_existing_api_key:
-    type: boolean
-    title: Use an existing API key
-    required: true
-    default: false
-    description: The API key will be used to authenticate the user when using the OCI devops repository
-  api_key:
-    type: file
-    title: Private key
-    required: true
-    visible: use_existing_api_key
   use_existing_vault:
     type: boolean
     title: Use an existing key vault
