@@ -8,7 +8,6 @@
 
 # creates the git repo called "config-repo"
 resource "oci_devops_repository" "config_repo" {
-  depends_on = [ oci_identity_api_key.user_api_key ]
   name = local.config_repo_name
   project_id = local.project_id
   repository_type = "HOSTED"

@@ -84,13 +84,6 @@ data "template_file" "deploy_script" {
   count = var.nb_copies
 }
 
-data "template_file" "ssh_config" {
-  template = "${file("${path.module}/ssh_config.template")}"
-  vars = {
-    "user" = local.ssh_login
-  }
-}
-
 data "oci_identity_api_keys" "dbconnection_api_key" {
   user_id = var.current_user_ocid
 }
