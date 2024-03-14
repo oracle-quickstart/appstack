@@ -19,7 +19,7 @@ resource "oci_devops_repository" "config_repo" {
 
 resource "tls_private_key" "rsa_api_key" {
   algorithm = "RSA"
-  rsa_bits  = 4096
+  rsa_bits  = 2048
   count = (local.use-image && !var.use_existing_api_key ? 0 : 1)
 }
 
