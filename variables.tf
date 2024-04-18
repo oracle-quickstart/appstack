@@ -394,6 +394,12 @@ variable "new_vault_display_name" {
   default = ""
 }
 
+variable "vault_key_comparment" {
+  type = string
+  description = "Vault encryption key compartment"
+  default = ""
+}
+
 variable "is_free_tier" {
   type = bool
   description = "APM free tier"
