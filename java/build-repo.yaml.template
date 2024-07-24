@@ -26,6 +26,20 @@ steps:
           echo $JAVA_HOME
         timeoutInSeconds: 400
   - type: Command
+    name: Install Gradle
+    timeoutInSeconds: 600
+    failImmediatelyOnError: true
+    command: |
+      curl -o gradle-8.5-bin.zip "https://services.gradle.org/distributions/gradle-8.5-bin.zip" -L
+      mkdir /opt/gradle
+      unzip -d /opt/gradle gradle-8.5-bin.zip
+      export PATH=/opt/gradle/gradle-8.5/bin:$PATH
+    onFailure:
+      - type: Command
+        command: |
+          ls
+        timeoutInSeconds: 400
+  - type: Command
     name: Build application
     timeoutInSeconds: 600
     failImmediatelyOnError: true
