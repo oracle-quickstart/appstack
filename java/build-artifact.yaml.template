@@ -36,7 +36,7 @@ steps:
       sh add-credential-wallet.sh
   - type: Command
     name: Build Docker image
-    timeoutInSeconds: 600
+    timeoutInSeconds: 900
     failImmediatelyOnError: true
     command: |
       docker build . --file Dockerfile --tag ${image_remote_tag}:${image_tag}-$${artifact_version} --tag ${image_latest_tag}

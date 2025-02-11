@@ -76,7 +76,7 @@ steps:
       cp $${OCI_WORKSPACE_DIR}/${repo_name}/${artifact_location} ./${fileName}
   - type: Command
     name: Build Docker image
-    timeoutInSeconds: 600
+    timeoutInSeconds: 900
     failImmediatelyOnError: true
     command: |
       cd $${OCI_WORKSPACE_DIR}/${repo_name}
