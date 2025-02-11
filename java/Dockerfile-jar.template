@@ -3,9 +3,16 @@
 
 # dockerfile for running the application from JAR 
 FROM container-registry.oracle.com/java/jdk-no-fee-term:17
+ENV LD_PRELOAD=/opt/app/lib/libtfojdbc1.so
+ENV LD_LIBRARY_PATH=extracted_binaries_path:/usr/java/jdk-17/lib;
+
+# TCP fastopen
+RUN sysctl -w net.ipv4.tcp_fastopen=5
+RUN sysctl -w net.ipv4.tcp_fastopen_blackhole_timeout_sec=0
 
 RUN useradd -U -d /home/appuser appuser && \
   mkdir /opt/app && \
+  mkdir /opt/app/lib && \
   mkdir /opt/apm && \
   mkdir /opt/apm-agent && \
   chown appuser:appuser /opt/app /opt/apm /opt/apm-agent 
@@ -27,5 +34,10 @@ WORKDIR /opt/app
 COPY --chown=appuser:appuser self.keystore .
 COPY --chown=appuser:appuser app.jar ./app.jar
 COPY --chown=appuser:appuser wallet ./wallet
+
+# Download the Oracle JDBC TCP Fast Open (TFO) Library File
+WORKDIR /opt/app/lib
+RUN curl https://download.oracle.com/otn-pub/otn_software/jdbc/tfo-lib/v1/libtfojdbc1.so_aarch64.zip -o libtfojdbc1.so_aarch64.zip
+RUN unzip libtfojdbc1.so_aarch64.zip
 
 CMD ["java", "-javaagent:/opt/apm-agent/oracle-apm-agent/bootstrap/ApmAgent.jar", "-jar", ${vm_options} "-Dspring.jmx.enabled=true", "-Dserver.tomcat.mbeanregistry.enabled=true", "-Doracle.jdbc.fanEnabled=false", "-Dserver.ssl.enabled=true", "-D${port_property}=${exposed_port}", "-D${key_alias_property}=self_signed", "-D${keystore_property}=self.keystore", "-D${keystore_type_property}=jks", "-D${keystore_password_property}=${keystore_password}", "app.jar" ${program_arguments}]
