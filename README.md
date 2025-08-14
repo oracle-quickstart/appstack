@@ -102,6 +102,10 @@ Before you can destroy the stack and all the resources that have been created yo
 This project welcomes contributions from the community. Before submitting a pull
 request, see [CONTRIBUTING](./CONTRIBUTING.md) for details.
 
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
+
 ## License
 
 Copyright (c) 2023, Oracle and/or its affiliates.
