@@ -7,38 +7,10 @@ component: build
 timeoutInSeconds: 3600
 shell: bash
 env:
-  variables:
-    JAVA_HOME : "/usr/java/latest"
   vaultVariables:
     DB_USER_PASSWORD : "${db_user_password}"
     WALLET_PASSWORD : "${wallet_password}"
 steps: 
-  - type: Command
-    name: Install Java
-    timeoutInSeconds: 600
-    failImmediatelyOnError: true
-    command: |
-      yum --enablerepo=ol7_oci_included clean metadata
-      yum install -y jdk-17
-    onFailure:
-      - type: Command
-        command: |
-          echo $JAVA_HOME
-        timeoutInSeconds: 400
-  - type: Command
-    name: Install Gradle
-    timeoutInSeconds: 600
-    failImmediatelyOnError: true
-    command: |
-      curl -o gradle-8.5-bin.zip "https://services.gradle.org/distributions/gradle-8.5-bin.zip" -L
-      mkdir /opt/gradle
-      unzip -d /opt/gradle gradle-8.5-bin.zip
-      export PATH=/opt/gradle/gradle-8.5/bin:$PATH
-    onFailure:
-      - type: Command
-        command: |
-          ls
-        timeoutInSeconds: 400
   - type: Command
     name: Build application
     timeoutInSeconds: 600
