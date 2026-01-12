@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 variable "devops_pipeline_image" {
   type = string
-  default = "OL7_X86_64_STANDARD_10"
+  default = "OL8_X86_64_STANDARD_10"
 }
 
 variable "devops_deploy_shape" {

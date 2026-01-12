@@ -138,7 +138,7 @@ resource "oci_devops_build_pipeline_stage" "repo_build_pipeline_stage" {
   image = var.devops_pipeline_image
   is_pass_all_parameters_enabled = false
   primary_build_source = oci_devops_repository.config_repo[0].name
-  stage_execution_timeout_in_seconds = 300
+  stage_execution_timeout_in_seconds = 3000
   count = local.use-repository ? 1 : 0
 }
 
@@ -173,7 +173,7 @@ resource "oci_devops_build_pipeline_stage" "art_build_pipeline_stage" {
   image = var.devops_pipeline_image
   is_pass_all_parameters_enabled = false
   primary_build_source = oci_devops_repository.config_repo[0].name
-  stage_execution_timeout_in_seconds = 300
+  stage_execution_timeout_in_seconds = 3000
   count = local.use-artifact ? 1 : 0
 }
 
