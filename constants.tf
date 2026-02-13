@@ -37,7 +37,7 @@ variable "lb_health_check_retries" {
 
 variable "lb_listener_cypher_suite" {
   type = string
-  default = "oci-wider-compatible-ssl-cipher-suite-v1"
+  default = "oci-tls-13-ssl-cipher-suite-v3"
 }
 
 variable "db_version" {
